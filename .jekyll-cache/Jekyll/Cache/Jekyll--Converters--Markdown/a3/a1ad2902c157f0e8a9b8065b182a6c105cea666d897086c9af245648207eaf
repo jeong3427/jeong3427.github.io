@@ -1,0 +1,119 @@
+I"�A<p>선생님</p>
+
+<ul>
+  <li><a href="https://towardsdatascience.com/recency-frequency-monetary-model-with-python-and-how-sephora-uses-it-to-optimize-their-google-d6a0707c5f17">링크</a></li>
+</ul>
+
+<hr />
+
+<p><strong>RFM 모델</strong></p>
+
+<ul>
+  <li>Recency : 얼마나 최근에</li>
+  <li>Frequency : 얼마나 자주</li>
+  <li>Monetary : 얼마나 매출을</li>
+</ul>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'purchase.txt'</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+
+<span class="c1"># datetime
+</span><span class="n">df</span><span class="p">[</span><span class="s">'purchase_date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'purchase_date'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'last_login'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'last_login'</span><span class="p">])</span>
+
+<span class="c1"># 최근 접속 유저들만 필터링
+</span><span class="n">df_recent</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'last_login'</span><span class="p">]</span><span class="o">&gt;</span><span class="s">'2021-10-10'</span><span class="p">]</span>
+
+<span class="c1"># team_id별로 price sum = 총 매출 = monetary
+# 각 team_id의 최대 purchase_date 에서 전체 purchase_date 최댓값을 빼서 날짜 숫자로 = recency 
+# purchase_log_id 카운트 = 몇 번 샀나 = frequency
+</span>
+
+<span class="c1"># lambda 활용
+</span><span class="n">df_recent_group_5</span> <span class="o">=</span> <span class="n">df_recent</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'team_id'</span><span class="p">]).</span><span class="n">agg</span><span class="p">({</span><span class="s">'price'</span><span class="p">:</span><span class="s">'sum'</span><span class="p">,</span>
+                                                    <span class="s">'purchase_date'</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="p">(</span><span class="n">df_recent</span><span class="p">[</span><span class="s">'purchase_date'</span><span class="p">].</span><span class="nb">max</span><span class="p">().</span><span class="n">date</span><span class="p">()</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="nb">max</span><span class="p">().</span><span class="n">date</span><span class="p">()).</span><span class="n">days</span><span class="p">,</span> 
+                                                    <span class="s">'purchase_log_id'</span><span class="p">:</span><span class="s">'count'</span><span class="p">})</span>
+                                                    
+<span class="n">df_recent_group_5</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s">'MONETARY'</span><span class="p">,</span><span class="s">'RECENCY'</span><span class="p">,</span><span class="s">'FREQUENCY'</span><span class="p">]</span>
+
+
+<span class="n">r_labels</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">f_labels</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">m_labels</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># qcut으로 백분율 4등분
+</span><span class="n">r_groups</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">df_recent_group_5</span><span class="p">[</span><span class="s">'RECENCY'</span><span class="p">],</span> <span class="n">q</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">r_labels</span><span class="p">)</span>
+<span class="n">f_groups</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">df_recent_group_5</span><span class="p">[</span><span class="s">'FREQUENCY'</span><span class="p">],</span> <span class="n">q</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">f_labels</span><span class="p">)</span>
+<span class="n">m_groups</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">df_recent_group_5</span><span class="p">[</span><span class="s">'MONETARY'</span><span class="p">],</span> <span class="n">q</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">m_labels</span><span class="p">)</span>
+
+
+<span class="n">df_recent_group_5</span> <span class="o">=</span> <span class="n">df_recent_group_5</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">R</span> <span class="o">=</span> <span class="n">r_groups</span><span class="p">.</span><span class="n">values</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">f_groups</span><span class="p">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">df_recent_group_5</span> <span class="o">=</span> <span class="n">df_recent_group_5</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">M</span> <span class="o">=</span> <span class="n">m_groups</span><span class="p">.</span><span class="n">values</span><span class="p">)</span>
+
+<span class="c1"># 백분율 1~4 뒤에 .0이 있는 거 제거
+</span><span class="n">pd</span><span class="p">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">'display.float_format'</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s">'%.0f'</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">join_rfm</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'R'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'F'</span><span class="p">])</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s">'M'</span><span class="p">])</span>
+<span class="n">df_recent_group_5</span><span class="p">[</span><span class="s">'RFM_Segment_Concat'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_recent_group_5</span><span class="p">.</span><span class="nb">apply</span><span class="p">(</span><span class="n">join_rfm</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">rfm</span> <span class="o">=</span> <span class="n">df_recent_group_5</span>
+<span class="n">rfm</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rfm</span><span class="p">[[</span><span class="s">'R'</span><span class="p">,</span><span class="s">'F'</span><span class="p">,</span><span class="s">'M'</span><span class="p">]].</span><span class="nb">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+
+<span class="k">def</span> <span class="nf">rfm_level</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">'Cant Loose Them'</span>
+    <span class="k">elif</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s">'Champions'</span>
+    <span class="k">elif</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s">'Loyal'</span>
+    <span class="k">elif</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s">'Potential'</span>
+    <span class="k">elif</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s">'Promising'</span>
+    <span class="k">elif</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'RFM_Score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="s">'Needs Attention'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">'Require Activation'</span>
+
+    
+    
+<span class="n">rfm</span><span class="p">[</span><span class="s">'RFM_Level'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rfm</span><span class="p">.</span><span class="nb">apply</span><span class="p">(</span><span class="n">rfm_level</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">rfm_level_agg</span> <span class="o">=</span> <span class="n">rfm</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'RFM_Level'</span><span class="p">).</span><span class="n">agg</span><span class="p">({</span>
+    <span class="s">'RECENCY'</span><span class="p">:</span> <span class="s">'mean'</span><span class="p">,</span>
+    <span class="s">'FREQUENCY'</span><span class="p">:</span> <span class="s">'mean'</span><span class="p">,</span>
+    <span class="s">'MONETARY'</span><span class="p">:</span> <span class="p">[</span><span class="s">'mean'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">rfm_level_agg</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">rfm_level_agg</span><span class="p">.</span><span class="n">columns</span><span class="p">.</span><span class="n">droplevel</span><span class="p">()</span>
+
+
+<span class="c1"># 표로 시각화
+</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">squarify</span>
+<span class="n">rfm_level_agg</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'RECENCYMean'</span><span class="p">,</span><span class="s">'FREQUENCYMean'</span><span class="p">,</span><span class="s">'MONETARYMean'</span><span class="p">,</span> <span class="s">'Count'</span><span class="p">]</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">gcf</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="p">.</span><span class="n">add_subplot</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">squarify</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sizes</span><span class="o">=</span><span class="n">rfm_level_agg</span><span class="p">[</span><span class="s">'Count'</span><span class="p">],</span> 
+              <span class="n">label</span><span class="o">=</span><span class="p">[</span><span class="s">'Cant Loose Them'</span><span class="p">,</span>
+                     <span class="s">'Champions'</span><span class="p">,</span>
+                     <span class="s">'Loyal'</span><span class="p">,</span>
+                     <span class="s">'Needs Attention'</span><span class="p">,</span>
+                     <span class="s">'Potential'</span><span class="p">,</span> 
+                     <span class="s">'Promising'</span><span class="p">,</span> 
+                     <span class="s">'Require Activation'</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="p">.</span><span class="mi">6</span> <span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">"RFM Segments"</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="s">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">axis</span><span class="p">(</span><span class="s">'off'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="../img/2021-12-13-RFM_model/7781a03f-f89c-4494-8f02-256a16407b67.png" alt="7781a03f-f89c-4494-8f02-256a16407b67" /></p>
+:ET
