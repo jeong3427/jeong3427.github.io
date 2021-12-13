@@ -1,0 +1,119 @@
+I"SE<p><strong>구글플레이 UI 개편</strong></p>
+
+<ul>
+  <li>중간에 랭킹이 있고</li>
+  <li>인기 앱/ 게임이 디폴트, 최고 매출을 클릭해야 랭킹이 바뀜</li>
+</ul>
+
+<p><img src="../img/2021-12-06-google_play2/image-20211206011526654.png" alt="image-20211206011526654" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span><span class="p">,</span> <span class="n">element</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s">'https://play.google.com/store/apps/category/GAME'</span>
+
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="p">.</span><span class="n">Chrome</span><span class="p">(</span><span class="s">'크롬 드라이버 주소'</span><span class="p">)</span>
+
+<span class="n">driver</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">result_html</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">page_source</span>
+<span class="n">result_soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">result_html</span><span class="p">,</span> <span class="s">'html.parser'</span><span class="p">)</span>
+
+<span class="n">text1</span> <span class="o">=</span> <span class="n">result_soup</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'a'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span> <span class="p">:</span> <span class="s">'Si6A0c itIJzb'</span><span class="p">})</span>
+
+<span class="n">app_list</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">contents</span> <span class="ow">in</span> <span class="n">text1</span> <span class="p">:</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="n">contents</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'sT93pb DdYX5 OnEJge '</span><span class="p">}).</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="n">genre</span> <span class="o">=</span> <span class="n">contents</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">'span'</span><span class="p">,{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'sT93pb w2kbF '</span><span class="p">}).</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">contents</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">0</span><span class="p">].</span><span class="n">get_text</span><span class="p">())</span> <span class="o">==</span> <span class="s">'New'</span> <span class="p">:</span>
+        <span class="n">grade</span> <span class="o">=</span> <span class="n">contents</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">2</span><span class="p">].</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">grade</span> <span class="o">=</span><span class="n">contents</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">1</span><span class="p">].</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="n">app_list</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">app_name</span><span class="p">,</span> <span class="n">genre</span><span class="p">,</span> <span class="n">grade</span><span class="p">))</span>
+
+<span class="n">app_list</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">app_list</span><span class="p">)</span>
+<span class="n">app_list</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'앱'</span><span class="p">,</span> <span class="s">'카테고리'</span><span class="p">,</span> <span class="s">'평점'</span><span class="p">]</span>
+<span class="n">app_list</span><span class="p">[</span><span class="s">'인기 순위'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">app_list</span><span class="p">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">app_list</span> <span class="o">=</span> <span class="n">app_list</span><span class="p">[[</span><span class="s">'인기 순위'</span><span class="p">,</span><span class="s">'앱'</span><span class="p">,</span> <span class="s">'카테고리'</span><span class="p">,</span> <span class="s">'평점'</span><span class="p">]]</span>
+<span class="c1"># print(app_list)
+</span>
+<span class="c1"># 최고 매출 항목으로 바꾸기
+</span><span class="n">top_grossing</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">'//*[@id="ct|apps_topgrossing"]'</span><span class="p">)</span>
+<span class="n">top_grossing</span><span class="p">.</span><span class="n">click</span><span class="p">()</span>
+<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">#최고 매출 항목으로 페이지가 바뀌게 기다리기
+</span>
+<span class="n">result_html2</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">page_source</span>
+<span class="n">result_soup2</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">result_html2</span><span class="p">,</span> <span class="s">'html.parser'</span><span class="p">)</span>
+<span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">#한 번 더 기다리기
+</span>
+<span class="n">text2</span> <span class="o">=</span> <span class="n">result_soup2</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'a'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span> <span class="p">:</span> <span class="s">'Si6A0c itIJzb'</span><span class="p">})</span>
+
+<span class="n">app_list2</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">contents2</span> <span class="ow">in</span> <span class="n">text2</span> <span class="p">:</span>
+    <span class="n">app_name2</span> <span class="o">=</span> <span class="n">contents2</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'sT93pb DdYX5 OnEJge '</span><span class="p">}).</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="n">genre2</span> <span class="o">=</span> <span class="n">contents2</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="s">'span'</span><span class="p">,{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'sT93pb w2kbF '</span><span class="p">}).</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">contents2</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">0</span><span class="p">].</span><span class="n">get_text</span><span class="p">())</span> <span class="o">==</span> <span class="s">'New'</span> <span class="p">:</span>
+        <span class="n">grade2</span> <span class="o">=</span> <span class="n">contents2</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">2</span><span class="p">].</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">grade2</span> <span class="o">=</span><span class="n">contents2</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">'span'</span><span class="p">,</span> <span class="p">{</span><span class="s">'class'</span><span class="p">:</span><span class="s">'w2kbF'</span><span class="p">})[</span><span class="mi">1</span><span class="p">].</span><span class="n">get_text</span><span class="p">()</span>
+    <span class="n">app_list2</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">app_name2</span><span class="p">,</span> <span class="n">genre2</span><span class="p">,</span> <span class="n">grade2</span><span class="p">))</span>
+
+<span class="n">app_list2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">app_list2</span><span class="p">)</span>
+<span class="n">app_list2</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'앱'</span><span class="p">,</span> <span class="s">'카테고리'</span><span class="p">,</span> <span class="s">'평점'</span><span class="p">]</span>
+<span class="n">app_list2</span><span class="p">[</span><span class="s">'매출 순위'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">app_list2</span><span class="p">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">app_list2</span> <span class="o">=</span> <span class="n">app_list2</span><span class="p">[[</span><span class="s">'매출 순위'</span><span class="p">,</span><span class="s">'앱'</span><span class="p">,</span> <span class="s">'카테고리'</span><span class="p">,</span> <span class="s">'평점'</span><span class="p">]]</span>
+
+<span class="c1"># print(app_list2)
+</span>
+<span class="n">driver</span><span class="p">.</span><span class="n">quit</span><span class="p">()</span>
+
+<span class="kn">import</span> <span class="nn">slack</span>
+<span class="kn">from</span> <span class="nn">slacker</span> <span class="kn">import</span> <span class="n">Slacker</span>
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="n">slack_token</span> <span class="o">=</span> <span class="s">"슬랙 토큰 키"</span>
+<span class="n">slack</span> <span class="o">=</span> <span class="n">Slacker</span><span class="p">(</span><span class="n">slack_token</span><span class="p">)</span>
+
+<span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">today</span><span class="p">()</span>
+<span class="n">today</span> <span class="o">=</span> <span class="n">today</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">"%Y-%m-%d"</span><span class="p">)</span>
+
+<span class="n">message1</span> <span class="o">=</span> <span class="n">app_list</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span><span class="n">message1</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span><span class="s">'keys'</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s">'presto'</span><span class="p">,</span> <span class="n">showindex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">slack</span><span class="p">.</span><span class="n">chat</span><span class="p">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">"#bot_test"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">today</span><span class="si">}</span><span class="s">'</span><span class="p">)</span> <span class="o">+</span> <span class="s">" `구글 인기 순위 Top 45`"</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">slack</span><span class="p">.</span><span class="n">chat</span><span class="p">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">"#bot_test"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<span class="n">message2</span> <span class="o">=</span> <span class="n">app_list2</span>
+<span class="n">text2</span> <span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span><span class="n">message2</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span><span class="s">'keys'</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s">'presto'</span><span class="p">,</span> <span class="n">showindex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">slack</span><span class="p">.</span><span class="n">chat</span><span class="p">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">"#슬랙 채널명"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">today</span><span class="si">}</span><span class="s">'</span><span class="p">)</span> <span class="o">+</span> <span class="s">" `구글 매출 순위 Top 45`"</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">slack</span><span class="p">.</span><span class="n">chat</span><span class="p">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">"#슬랙 채널명"</span><span class="p">,</span> <span class="n">text2</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"문제 없이 보냈습니다."</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="../img/2021-12-06-google_play2/image-20211206011826663.png" alt="image-20211206011826663" style="zoom:67%;" /></p>
+
+<p><img src="../img/2021-12-06-google_play2/image-20211206011807814.png" alt="image-20211206011807814" style="zoom:67%;" /></p>
+
+<p>평점 긁어 오는데 헤맸는데 야매로 처리해 버렸다</p>
+
+<p>구글 플레이 평점은 텍스트가 아니라 &lt;div aria-label&gt; 로 되어 있어서 get_text()가 안 먹힘</p>
+
+<p>문자 처리한 contents.find_all(‘span’, {‘class’:’w2kbF’})[0].get_text()가 New면 아래와 같이</p>
+
+<p><img src="../img/2021-12-06-google_play2/image-20211206012028939.png" alt="image-20211206012028939" /></p>
+
+<p>앱 이름 다음에 신규라서 “New”가 뜬 앱이고 아니면 New 표시가 없어서 if문으로 처리</p>
+
+<p><img src="../img/2021-12-06-google_play2/image-20211206012201610.png" alt="image-20211206012201610" /></p>
+
+<p>[0],[1],[2]가 각각 New, 롤플레잉, 4.0 // 롤플레잉, 4.6 이런 식</p>
+:ET

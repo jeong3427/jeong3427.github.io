@@ -1,0 +1,72 @@
+I"�
+<p>join 예시</p>
+
+<p><img src="../img/2021-12-05-SQL1/1861.png" alt="1861" style="zoom:67%;" /></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p>putty 편집</p>
+
+<p>1.ls -al &gt; 숨겨진 파일 표시</p>
+
+<p>2.cat .env &gt; .env 파일 내용 확인</p>
+
+<p>3.vi .env &gt; .env 파일 텍스트 확인</p>
+
+<p>4.비밀번호 위치에서 i를 눌러 편집상태로 변경</p>
+
+<p>5.비밀번호 변경</p>
+
+<p>6.esc를 누르고 :wq로 빠져나온다</p>
+
+<p>7.cat.env로 현재 패스워드 확인</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p>찾고 싶은 이름이 들어간 컬럼 찾기</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">TABLE_SCHEMA</span><span class="p">,</span> <span class="k">TABLE_NAME</span><span class="p">,</span> <span class="k">COLUMN_NAME</span>
+<span class="k">FROM</span> <span class="n">INFORMATION_SCHEMA</span><span class="p">.</span><span class="n">COLUMNS</span>
+<span class="k">WHERE</span> <span class="k">COLUMN_NAME</span> <span class="k">LIKE</span> <span class="s1">'%컬럼명%'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>테이블 찾기</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">show</span> <span class="n">tables</span> <span class="k">like</span> <span class="s1">'%테이블명%'</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>서로 다른 DB에 있는 컬럼 연결하기</p>
+
+<ul>
+  <li>neomlb_data</li>
+  <li>neomlb_log</li>
+  <li>두 개의 DB에 각각 컬럼이 있을 때 사용법</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="err">컬럼명</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="err">컬럼명</span>
+<span class="k">from</span> <span class="n">neomlb_data</span><span class="p">.</span><span class="err">테이블명</span> <span class="n">a</span><span class="p">,</span> <span class="n">neomlb_log</span><span class="p">.</span><span class="err">테이블명</span> <span class="n">b</span>
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">키</span><span class="n">_</span><span class="err">컬럼명</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">키</span><span class="n">_</span><span class="err">컬럼명</span>
+<span class="p">;</span> 
+</code></pre></div></div>
+
+:ET

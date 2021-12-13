@@ -1,0 +1,435 @@
+I"�T<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">1.</span><span class="n">yyyy</span><span class="o">-</span><span class="n">mm</span><span class="o">-</span><span class="n">dd에서</span> <span class="n">연도만</span> <span class="n">빼내는</span> <span class="n">방법</span>
+<span class="n">함수</span> <span class="n">적용</span> <span class="o">-</span> <span class="n">extract_year라는</span> <span class="n">함수를</span> <span class="k">def</span> <span class="nf">하고</span>
+<span class="n">df에</span> <span class="p">[</span><span class="s">'year'</span><span class="p">]</span> <span class="n">라는</span> <span class="n">열을</span> <span class="n">하나</span> <span class="n">만들</span> <span class="n">건데</span><span class="p">,</span> 
+<span class="n">그</span> <span class="n">열은</span> <span class="n">df의</span> <span class="p">[</span><span class="s">'yyyy-mm-dd'</span><span class="p">]</span> <span class="n">라는</span> <span class="n">열에다가</span> <span class="n">앞서</span> <span class="n">정의한</span> <span class="n">extract_year를</span> <span class="n">적용시킬</span> <span class="n">거야</span>
+ 
+
+<span class="k">def</span> <span class="nf">extract_year는</span> <span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="n">를</span> <span class="n">사용하는데</span><span class="p">,</span>
+<span class="n">그</span> <span class="n">행을</span> <span class="n">split</span> <span class="n">할</span> <span class="n">거야</span><span class="p">,</span> <span class="n">구분인자는</span> <span class="p">(</span><span class="s">'-'</span><span class="p">)</span> <span class="n">이고</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="n">그</span> <span class="n">중</span> <span class="n">맨</span> <span class="n">처음에</span> <span class="n">있는</span> <span class="n">항목을</span> <span class="n">가져올</span> <span class="n">거야</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">date_list</span> <span class="o">=</span><span class="p">[</span>
+    <span class="p">{</span><span class="s">'yyyy-mm-dd'</span><span class="p">:</span><span class="s">'2000-06-27'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">'yyyy-mm-dd'</span><span class="p">:</span><span class="s">'2010-04-27'</span><span class="p">}</span>
+<span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">date_list</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'yyyy-mm-dd'</span><span class="p">])</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>yyyy-mm-dd</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2000-06-27</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2010-04-27</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">extract_year</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">row</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'-'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'yyyy-mm-dd'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="n">extract_year</span><span class="p">)</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>yyyy-mm-dd</th>
+      <th>year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2000-06-27</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2010-04-27</td>
+      <td>2010</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.</span> <span class="n">구조가</span> <span class="n">같은</span> <span class="n">데이터</span> <span class="n">프레임을</span> <span class="n">기존</span> <span class="n">데이터</span> <span class="n">프레임에</span> <span class="n">추가</span> <span class="n">시키기</span>  <span class="o">-</span> <span class="n">append</span> <span class="n">와</span> <span class="n">concat</span>
+<span class="n">df와</span> <span class="n">같은</span> <span class="n">구조를</span> <span class="n">갖고</span> <span class="n">있는</span> <span class="n">df2가</span> <span class="n">있다면</span> <span class="n">append를</span> <span class="n">사용해서</span> <span class="n">추가시키기</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">ignore_index를</span> <span class="n">생략할</span> <span class="n">경우</span><span class="p">,</span> <span class="n">df2의</span> <span class="n">인덱스가</span> <span class="mi">0</span><span class="n">인</span> <span class="n">채로</span> <span class="n">들어가게</span> <span class="n">된다</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Nate'</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Jenny'</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="p">]</span>
+ 
+<span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'midterm'</span><span class="p">,</span><span class="s">'final'</span> <span class="p">]</span>
+ 
+<span class="n">df</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">test_list</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+
+<span class="n">test_list_2</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'Ben'</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span> <span class="mi">58</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">test_list_2</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+<span class="n">df2</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Ben</td>
+      <td>50</td>
+      <td>58</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Ben</td>
+      <td>50</td>
+      <td>58</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">concat으로</span> <span class="n">합치기</span>
+<span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">데이터프레임1</span><span class="p">,</span> <span class="n">데이터프레임2</span><span class="p">],</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">열을</span> <span class="n">붙일</span> <span class="n">때는</span> <span class="n">axis</span> <span class="o">=</span><span class="mi">1</span> <span class="n">추가하면</span> <span class="n">된다</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test_list_3</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'Ed'</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span> <span class="mi">78</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Jack'</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span><span class="mi">45</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="n">df3</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">test_list_3</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+
+<span class="n">df4</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df3</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df4</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Ben</td>
+      <td>50</td>
+      <td>58</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Ed</td>
+      <td>80</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Jack</td>
+      <td>65</td>
+      <td>45</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df5</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">df3</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df5</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+      <td>Ed</td>
+      <td>80.0</td>
+      <td>78.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+      <td>Jack</td>
+      <td>65.0</td>
+      <td>45.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Ben</td>
+      <td>50</td>
+      <td>58</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">3.</span> <span class="n">데이터</span> <span class="n">프레임</span> <span class="n">안의</span> <span class="n">데이터들로</span> <span class="n">그룹</span> <span class="n">짓기</span><span class="p">,</span> <span class="n">카운트</span> <span class="n">세기</span>
+<span class="n">df</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'원하는 변수'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">4.</span> <span class="n">데이터</span> <span class="n">프레임</span> <span class="n">정보</span> <span class="n">검색</span> <span class="n">및</span> <span class="n">NULL</span> <span class="n">값을</span> <span class="n">찾아</span> <span class="n">변경하기</span>
+
+<span class="mi">1</span><span class="p">)</span> <span class="n">null</span> <span class="n">값을</span> <span class="n">찾아</span> <span class="mi">0</span><span class="n">으로</span> <span class="n">바꾸기</span>
+<span class="mi">2</span><span class="p">)</span> <span class="n">평균값으로</span> <span class="n">대체하기</span>
+ 
+
+<span class="n">df</span><span class="p">.</span><span class="n">shape</span> <span class="o">-&gt;</span> <span class="n">몇</span> <span class="n">행</span> <span class="n">몇</span> <span class="n">열인지</span> <span class="n">알려줌</span>
+<span class="n">df</span><span class="p">.</span><span class="n">info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">non</span><span class="o">-</span><span class="n">null인</span> <span class="n">오브젝트가</span> <span class="n">몇개인지</span> <span class="n">각</span> <span class="n">열마다</span> <span class="n">알려줌</span>
+<span class="n">df</span><span class="p">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">null</span> <span class="n">값이면</span> <span class="n">true라고</span> <span class="n">보여줌</span>
+ 
+
+<span class="mi">1</span><span class="p">)</span> <span class="n">null을</span> <span class="mi">0</span><span class="n">으로</span> <span class="n">바꾸기</span>
+<span class="n">df</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">age</span><span class="p">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">df의</span> <span class="n">age라는</span> <span class="n">칼럼을</span> <span class="n">na일</span> <span class="n">경우</span> <span class="mi">0</span><span class="n">으로</span> <span class="n">바꿔줘</span>
+ 
+
+ 
+
+<span class="mi">2</span><span class="p">)</span> <span class="n">평균</span> <span class="n">값으로</span> <span class="n">대체하기</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s">'age'</span><span class="p">].</span><span class="n">fillna</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'job'</span><span class="p">)[</span><span class="s">'age'</span><span class="p">].</span><span class="n">transform</span><span class="p">(</span><span class="s">'median'</span><span class="p">),</span><span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">df의</span> <span class="n">age라는</span> <span class="n">컬럼에서</span> <span class="n">na일</span> <span class="n">때</span> <span class="n">값을</span> <span class="n">채울</span> <span class="n">건데</span><span class="p">,</span>
+<span class="n">job이라는</span> <span class="n">항목으로</span> <span class="n">그루핑을</span> <span class="n">하고</span>
+<span class="n">age라는</span> <span class="n">컬럼은</span> <span class="n">바꿀</span> <span class="n">거야</span> <span class="o">-</span> <span class="n">그루핑한</span> <span class="n">median</span><span class="p">(</span><span class="n">평균</span><span class="p">)</span> <span class="n">값으로</span>
+<span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span> <span class="o">-&gt;</span> <span class="n">바로</span> <span class="n">df에</span> <span class="n">적용</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">5.</span> <span class="n">중복값</span> <span class="n">제거하기</span>
+<span class="n">하나의</span> <span class="n">값만</span> <span class="n">기준으로</span> <span class="n">중복값</span> <span class="n">제거하기</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="s">'first'</span><span class="p">)</span>
+
+<span class="n">두</span> <span class="n">가지</span> <span class="n">기준으로</span> <span class="n">중복값</span> <span class="n">제거하기</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s">'team_id'</span><span class="p">,</span> <span class="s">'date'</span><span class="p">],</span> <span class="n">keep</span> <span class="o">=</span> <span class="s">'first'</span><span class="p">)</span>
+</code></pre></div></div>
+:ET

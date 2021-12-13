@@ -1,0 +1,7 @@
+I"<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">1.</span><span class="n">yyyy</span><span class="o">-</span><span class="n">mm</span><span class="o">-</span><span class="n">dd에서</span> <span class="n">연도만</span> <span class="n">빼내는</span> <span class="n">방법</span>
+<span class="n">함수</span> <span class="n">적용</span> <span class="o">-</span> <span class="n">extract_year라는</span> <span class="n">함수를</span> <span class="k">def</span> <span class="nf">하고</span>
+<span class="n">df에</span> <span class="p">[</span><span class="s">'year'</span><span class="p">]</span> <span class="n">라는</span> <span class="n">열을</span> <span class="n">하나</span> <span class="n">만들</span> <span class="n">건데</span><span class="p">,</span> 
+<span class="n">그</span> <span class="n">열은</span> <span class="n">df의</span> <span class="p">[</span><span class="s">'yyyy-mm-dd'</span><span class="p">]</span> <span class="n">라는</span> <span class="n">열에다가</span> <span class="n">앞서</span> <span class="n">정의한</span> <span class="n">extract_year를</span> <span class="n">적용시킬</span> <span class="n">거야</span>
+ 
+</code></pre></div></div>
+:ET

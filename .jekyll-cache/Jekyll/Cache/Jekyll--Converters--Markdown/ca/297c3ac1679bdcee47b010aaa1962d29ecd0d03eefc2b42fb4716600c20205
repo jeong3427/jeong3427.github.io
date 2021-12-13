@@ -1,0 +1,14 @@
+I"G<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+  
+  
+<span class="c1"># 가져올 파일들이 있는 directory path 설정
+# 파일명에서 한글 없게 처리
+</span> 
+<span class="n">path_dir</span> <span class="o">=</span> <span class="s">"C:/Users/GD-hjim/Desktop/photo"</span>
+<span class="n">file_list</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path_dir</span><span class="p">)</span>       
+<span class="n">file_list_png</span> <span class="o">=</span> <span class="p">[</span><span class="nb">file</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">file_list</span> <span class="k">if</span> <span class="nb">file</span><span class="p">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">".png"</span><span class="p">)]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">file_list_png</span><span class="p">)</span>
+</code></pre></div></div>
+:ET

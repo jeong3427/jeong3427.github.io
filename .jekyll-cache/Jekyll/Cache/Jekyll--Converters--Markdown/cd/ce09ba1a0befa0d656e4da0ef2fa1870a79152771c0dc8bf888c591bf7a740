@@ -1,0 +1,784 @@
+I"��<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#datelist 라는 엑셀 파일에
+#yyyy-mm-dd  형식으로 날짜 리스트 준비
+</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">html_table_parser</span> <span class="kn">import</span> <span class="n">parser_functions</span> <span class="k">as</span> <span class="n">parser</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+
+<span class="c1">#시작 시간 측정
+</span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c1">#긁어 올 datelist 준비 yyyy-mm-dd 형식
+</span><span class="n">datelist</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">'datelist.xlsx'</span><span class="p">,</span> <span class="n">sheet_name</span> <span class="o">=</span><span class="s">'Sheet1'</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+<span class="n">datelist</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'date'</span><span class="p">]</span>
+<span class="n">datelist</span> <span class="o">=</span> <span class="n">datelist</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span>
+
+<span class="n">df_list</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">datelist</span><span class="p">.</span><span class="n">index</span> <span class="p">:</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s">'http://www.statiz.co.kr/boxscore.php?date='</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datelist</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    
+    <span class="n">html</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">).</span><span class="n">text</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">'html.parser'</span><span class="p">)</span>
+
+    <span class="c1">#경기 정보
+</span>    <span class="n">texts</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">'h3.box-title'</span><span class="p">)</span>
+
+    <span class="n">play_info</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+        <span class="n">play_info_text</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">play_info</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">play_info_text</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">play_info</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span>
+    
+    <span class="c1">#첫째 줄은 필요 없어서 버림
+</span>    <span class="n">play_info</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">[</span><span class="mi">1</span><span class="p">:].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    
+
+
+    <span class="c1">#긁어 올 경기 링크 정보 : 공통적으로 opt=5로 끝난다
+</span>    <span class="n">links</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">"a[href$='opt=5']"</span><span class="p">)</span>
+
+    <span class="n">link_info</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">a_tag</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+        <span class="n">link_info_text</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">a_tag</span><span class="p">[</span><span class="s">"href"</span><span class="p">])</span>
+        <span class="n">link_info</span> <span class="o">=</span> <span class="n">link_info</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_info_text</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+    <span class="c1">#경기가 없는 날짜도 datelist에 있을 수 있어 try, excpet 처리
+</span>    <span class="c1">#경기 없는 날은 pass
+</span>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">link_info</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'link'</span><span class="p">]</span>
+
+        <span class="n">play_info</span><span class="p">[</span><span class="s">'link'</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_info</span><span class="p">[</span><span class="s">'link'</span><span class="p">]</span>
+        <span class="n">play_info</span><span class="p">[</span><span class="s">'url'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s">'http://www.statiz.co.kr/'</span><span class="p">)</span> <span class="o">+</span> <span class="n">play_info</span><span class="p">[</span><span class="s">'link'</span><span class="p">]</span>
+        
+        <span class="k">def</span> <span class="nf">date_info</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">row</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">' '</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">play_info</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">[</span><span class="s">'info'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="n">date_info</span><span class="p">)</span>
+        
+        <span class="n">play_info</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s">'url'</span><span class="p">,</span><span class="s">'date'</span><span class="p">])</span>
+
+        <span class="c1">#취소된 경기는 링크가 없다. dropna로 버리자
+</span>        <span class="n">play_info</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">play_info</span><span class="p">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">play_url</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">[</span><span class="s">'url'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            
+            <span class="n">result_html</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">play_url</span><span class="p">).</span><span class="n">text</span>
+            <span class="n">result_soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">result_html</span><span class="p">,</span> <span class="s">'html.parser'</span><span class="p">)</span>
+
+            <span class="n">play_by_play</span> <span class="o">=</span> <span class="n">result_soup</span><span class="p">.</span><span class="n">find_all</span><span class="p">(</span><span class="s">"table"</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s">"class"</span><span class="p">:</span><span class="s">"table table-striped"</span><span class="p">})[</span><span class="mi">2</span><span class="p">]</span> 
+            <span class="n">html_table</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="n">make2d</span><span class="p">(</span><span class="n">play_by_play</span><span class="p">)</span>
+
+            <span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">html_table</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">columns</span><span class="o">=</span><span class="n">html_table</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  
+            
+            
+            <span class="c1"># 팀 정보
+</span>            <span class="n">team_texts</span> <span class="o">=</span> <span class="n">result_soup</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">'h3.box-title'</span><span class="p">)</span>
+
+            <span class="n">team_info</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">team_texts</span><span class="p">:</span>
+                <span class="n">team_text</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">Series</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">team_info</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">team_text</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="n">team_info</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span>
+                
+            <span class="n">team_info</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">team_info</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">[</span><span class="s">'info'</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">','</span><span class="p">).</span><span class="nb">str</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">team_info</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">.</span><span class="n">transpose</span><span class="p">().</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">team_info</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'away'</span><span class="p">,</span><span class="s">'home'</span><span class="p">]</span>
+
+            <span class="n">df1</span><span class="p">[</span><span class="s">'away'</span><span class="p">]</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">[</span><span class="s">'away'</span><span class="p">].</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">df1</span><span class="p">[</span><span class="s">'home'</span><span class="p">]</span> <span class="o">=</span> <span class="n">team_info</span><span class="p">[</span><span class="s">'home'</span><span class="p">].</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>            
+            
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">play_info</span><span class="p">[</span><span class="s">'date'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            
+
+        <span class="n">df_list</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+    <span class="k">except</span><span class="p">:</span> 
+        <span class="k">pass</span>
+
+
+
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span>
+<span class="n">dataframe</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'play_by_play_record.csv'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">"euc-kr"</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">"종료"</span><span class="p">)</span>
+
+<span class="n">sec</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start</span>
+<span class="n">times</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="p">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">sec</span><span class="p">)).</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">'2020.xlsx'</span><span class="p">,</span> <span class="n">sheet_name</span> <span class="o">=</span> <span class="s">'play_by_play_record_2020'</span><span class="p">)</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>이닝</th>
+      <th>투수</th>
+      <th>타순</th>
+      <th>타자</th>
+      <th>투구수</th>
+      <th>볼카운트</th>
+      <th>결과</th>
+      <th>결과(대분류)</th>
+      <th>이전 상황 아웃카운트</th>
+      <th>이후 상황 아웃 카운트</th>
+      <th>...</th>
+      <th>이전 상황 점수차이</th>
+      <th>이후 상황 스코어(어웨이)</th>
+      <th>이후 상황 스코어(홈)</th>
+      <th>이후 상황 점수차이</th>
+      <th>LEV</th>
+      <th>REs</th>
+      <th>REa</th>
+      <th>WPe</th>
+      <th>WPa</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>1.0</td>
+      <td>박건우</td>
+      <td>8.0</td>
+      <td>2-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>무사</td>
+      <td>무사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.87</td>
+      <td>0.555</td>
+      <td>0.398</td>
+      <td>0.465</td>
+      <td>0.036</td>
+      <td>2020-05-05</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>2.0</td>
+      <td>허경민</td>
+      <td>6.0</td>
+      <td>2-3</td>
+      <td>좌익수 뜬공</td>
+      <td>뜬공</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.44</td>
+      <td>0.953</td>
+      <td>-0.380</td>
+      <td>0.498</td>
+      <td>-0.033</td>
+      <td>2020-05-05</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>3.0</td>
+      <td>오재일</td>
+      <td>5.0</td>
+      <td>2-2</td>
+      <td>오재일 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>1사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.15</td>
+      <td>0.573</td>
+      <td>-0.322</td>
+      <td>0.526</td>
+      <td>-0.028</td>
+      <td>2020-05-05</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>4.0</td>
+      <td>김재환</td>
+      <td>3.0</td>
+      <td>2-0</td>
+      <td>김재환 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>2사</td>
+      <td>이닝종료</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.79</td>
+      <td>0.251</td>
+      <td>-0.251</td>
+      <td>0.548</td>
+      <td>-0.022</td>
+      <td>2020-05-05</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1말</td>
+      <td>알칸타라</td>
+      <td>1.0</td>
+      <td>이천웅</td>
+      <td>4.0</td>
+      <td>2-1</td>
+      <td>이천웅 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.87</td>
+      <td>0.555</td>
+      <td>-0.258</td>
+      <td>0.526</td>
+      <td>-0.022</td>
+      <td>2020-05-05</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>72198</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>2.0</td>
+      <td>이진영</td>
+      <td>5.0</td>
+      <td>2-2</td>
+      <td>이진영 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>2.26</td>
+      <td>0.555</td>
+      <td>-0.258</td>
+      <td>0.580</td>
+      <td>-0.058</td>
+      <td>2020-10-31</td>
+    </tr>
+    <tr>
+      <th>72199</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>3.0</td>
+      <td>유민상</td>
+      <td>4.0</td>
+      <td>0-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>1사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>1.80</td>
+      <td>0.297</td>
+      <td>0.276</td>
+      <td>0.635</td>
+      <td>0.055</td>
+      <td>2020-10-31</td>
+    </tr>
+    <tr>
+      <th>72200</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>4.0</td>
+      <td>이우성</td>
+      <td>5.0</td>
+      <td>1-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>1사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>2.92</td>
+      <td>0.573</td>
+      <td>0.398</td>
+      <td>0.708</td>
+      <td>0.073</td>
+      <td>2020-10-31</td>
+    </tr>
+    <tr>
+      <th>72201</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>5.0</td>
+      <td>한승택</td>
+      <td>4.0</td>
+      <td>1-2</td>
+      <td>1루수 땅볼</td>
+      <td>땅볼</td>
+      <td>1사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4.30</td>
+      <td>0.971</td>
+      <td>-0.337</td>
+      <td>0.635</td>
+      <td>-0.073</td>
+      <td>2020-10-31</td>
+    </tr>
+    <tr>
+      <th>72202</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>6.0</td>
+      <td>최정용</td>
+      <td>3.0</td>
+      <td>1-1</td>
+      <td>유격수 내야안타</td>
+      <td>안타</td>
+      <td>2사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>3</td>
+      <td>4</td>
+      <td>1</td>
+      <td>4.63</td>
+      <td>0.634</td>
+      <td>0.832</td>
+      <td>1.000</td>
+      <td>0.365</td>
+      <td>2020-10-31</td>
+    </tr>
+  </tbody>
+</table>
+<p>72203 rows × 26 columns</p>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'이전상황 루상황'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'만루'</span><span class="p">),</span><span class="s">'만루'</span><span class="p">,</span> 
+                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'2,3루'</span><span class="p">),</span><span class="s">'2,3루'</span><span class="p">,</span>
+                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1,3루'</span><span class="p">),</span><span class="s">'1,3루'</span><span class="p">,</span>
+                                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1,2루'</span><span class="p">),</span><span class="s">'1,2루'</span><span class="p">,</span>
+                                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'3루'</span><span class="p">),</span><span class="s">'3루'</span><span class="p">,</span>
+                                                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'2루'</span><span class="p">),</span><span class="s">'2루'</span><span class="p">,</span>
+                                                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이전상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1루'</span><span class="p">),</span><span class="s">'1루'</span><span class="p">,</span><span class="s">''</span><span class="p">)))))))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'이후상황 루상황'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'만루'</span><span class="p">),</span><span class="s">'만루'</span><span class="p">,</span> 
+                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'2,3루'</span><span class="p">),</span><span class="s">'2,3루'</span><span class="p">,</span>
+                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1,3루'</span><span class="p">),</span><span class="s">'1,3루'</span><span class="p">,</span>
+                                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1,2루'</span><span class="p">),</span><span class="s">'1,2루'</span><span class="p">,</span>
+                                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'3루'</span><span class="p">),</span><span class="s">'3루'</span><span class="p">,</span>
+                                                         <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'2루'</span><span class="p">),</span><span class="s">'2루'</span><span class="p">,</span>
+                                                                 <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">이후상황</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'1루'</span><span class="p">),</span><span class="s">'1루'</span><span class="p">,</span><span class="s">''</span><span class="p">)))))))</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>이닝</th>
+      <th>투수</th>
+      <th>타순</th>
+      <th>타자</th>
+      <th>투구수</th>
+      <th>볼카운트</th>
+      <th>결과</th>
+      <th>결과(대분류)</th>
+      <th>이전 상황 아웃카운트</th>
+      <th>이후 상황 아웃 카운트</th>
+      <th>...</th>
+      <th>이후 상황 스코어(홈)</th>
+      <th>이후 상황 점수차이</th>
+      <th>LEV</th>
+      <th>REs</th>
+      <th>REa</th>
+      <th>WPe</th>
+      <th>WPa</th>
+      <th>date</th>
+      <th>이전상황 루상황</th>
+      <th>이후상황 루상황</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>1.0</td>
+      <td>박건우</td>
+      <td>8.0</td>
+      <td>2-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>무사</td>
+      <td>무사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.87</td>
+      <td>0.555</td>
+      <td>0.398</td>
+      <td>0.465</td>
+      <td>0.036</td>
+      <td>2020-05-05</td>
+      <td></td>
+      <td>1루</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>2.0</td>
+      <td>허경민</td>
+      <td>6.0</td>
+      <td>2-3</td>
+      <td>좌익수 뜬공</td>
+      <td>뜬공</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.44</td>
+      <td>0.953</td>
+      <td>-0.380</td>
+      <td>0.498</td>
+      <td>-0.033</td>
+      <td>2020-05-05</td>
+      <td>1루</td>
+      <td>1루</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>3.0</td>
+      <td>오재일</td>
+      <td>5.0</td>
+      <td>2-2</td>
+      <td>오재일 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>1사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1.15</td>
+      <td>0.573</td>
+      <td>-0.322</td>
+      <td>0.526</td>
+      <td>-0.028</td>
+      <td>2020-05-05</td>
+      <td>1루</td>
+      <td>1루</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1초</td>
+      <td>차우찬</td>
+      <td>4.0</td>
+      <td>김재환</td>
+      <td>3.0</td>
+      <td>2-0</td>
+      <td>김재환 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>2사</td>
+      <td>이닝종료</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.79</td>
+      <td>0.251</td>
+      <td>-0.251</td>
+      <td>0.548</td>
+      <td>-0.022</td>
+      <td>2020-05-05</td>
+      <td>1루</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1말</td>
+      <td>알칸타라</td>
+      <td>1.0</td>
+      <td>이천웅</td>
+      <td>4.0</td>
+      <td>2-1</td>
+      <td>이천웅 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.87</td>
+      <td>0.555</td>
+      <td>-0.258</td>
+      <td>0.526</td>
+      <td>-0.022</td>
+      <td>2020-05-05</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>72198</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>2.0</td>
+      <td>이진영</td>
+      <td>5.0</td>
+      <td>2-2</td>
+      <td>이진영 : 삼진 아웃</td>
+      <td>삼진</td>
+      <td>무사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>3</td>
+      <td>0</td>
+      <td>2.26</td>
+      <td>0.555</td>
+      <td>-0.258</td>
+      <td>0.580</td>
+      <td>-0.058</td>
+      <td>2020-10-31</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>72199</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>3.0</td>
+      <td>유민상</td>
+      <td>4.0</td>
+      <td>0-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>1사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>3</td>
+      <td>0</td>
+      <td>1.80</td>
+      <td>0.297</td>
+      <td>0.276</td>
+      <td>0.635</td>
+      <td>0.055</td>
+      <td>2020-10-31</td>
+      <td></td>
+      <td>1루</td>
+    </tr>
+    <tr>
+      <th>72200</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>4.0</td>
+      <td>이우성</td>
+      <td>5.0</td>
+      <td>1-3</td>
+      <td>볼넷</td>
+      <td>볼넷</td>
+      <td>1사</td>
+      <td>1사</td>
+      <td>...</td>
+      <td>3</td>
+      <td>0</td>
+      <td>2.92</td>
+      <td>0.573</td>
+      <td>0.398</td>
+      <td>0.708</td>
+      <td>0.073</td>
+      <td>2020-10-31</td>
+      <td>1루</td>
+      <td>1,2루</td>
+    </tr>
+    <tr>
+      <th>72201</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>5.0</td>
+      <td>한승택</td>
+      <td>4.0</td>
+      <td>1-2</td>
+      <td>1루수 땅볼</td>
+      <td>땅볼</td>
+      <td>1사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>3</td>
+      <td>0</td>
+      <td>4.30</td>
+      <td>0.971</td>
+      <td>-0.337</td>
+      <td>0.635</td>
+      <td>-0.073</td>
+      <td>2020-10-31</td>
+      <td>1,2루</td>
+      <td>2,3루</td>
+    </tr>
+    <tr>
+      <th>72202</th>
+      <td>9말</td>
+      <td>박진우</td>
+      <td>6.0</td>
+      <td>최정용</td>
+      <td>3.0</td>
+      <td>1-1</td>
+      <td>유격수 내야안타</td>
+      <td>안타</td>
+      <td>2사</td>
+      <td>2사</td>
+      <td>...</td>
+      <td>4</td>
+      <td>1</td>
+      <td>4.63</td>
+      <td>0.634</td>
+      <td>0.832</td>
+      <td>1.000</td>
+      <td>0.365</td>
+      <td>2020-10-31</td>
+      <td>2,3루</td>
+      <td>1,2루</td>
+    </tr>
+  </tbody>
+</table>
+<p>72203 rows × 28 columns</p>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">dataframe</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'2020.txt'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="s">"euc-kr"</span><span class="p">)</span>
+</code></pre></div></div>
+:ET
