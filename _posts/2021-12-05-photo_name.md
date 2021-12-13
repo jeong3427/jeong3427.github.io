@@ -20,7 +20,7 @@ file_list_png = [file for file in file_list if file.endswith(".png")]
 print(file_list_png)
 ```
 
-<img src="../img/2021-12-05-photo_name/photo1.png" alt="photo1" style="zoom:67%;" />
+<img src="../../../../img/2021-12-05-photo_name/photo1.png" alt="photo1" style="zoom:67%;" />
 
 .
 
@@ -39,7 +39,7 @@ df = pd.read_excel('output.xlsx')
 df
 ```
 
-![photo2](../img/2021-12-05-photo_name/photo2.png)
+![photo2](../../../../img/2021-12-05-photo_name/photo2.png)
 
 .
 
