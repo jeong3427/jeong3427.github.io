@@ -1,8 +1,0 @@
-I"n<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">0.</span><span class="n">인덱스</span> <span class="n">이해</span>
-<span class="n">df</span><span class="p">[</span>  <span class="err">◎</span>     <span class="p">:</span>     <span class="err">◎</span>   <span class="p">]</span>  
-     <span class="err">▼</span>           <span class="err">▽</span>
-    <span class="n">여기서부터</span>   <span class="n">얘</span> <span class="n">전까지</span> <span class="p">(</span><span class="n">포함</span> <span class="n">안</span> <span class="n">함</span><span class="p">)</span> 
-    
-<span class="n">인덱스는</span> <span class="n">항상</span> <span class="mi">0</span><span class="n">부터</span> <span class="n">시작</span><span class="err">!</span>
-</code></pre></div></div>
-:ET
