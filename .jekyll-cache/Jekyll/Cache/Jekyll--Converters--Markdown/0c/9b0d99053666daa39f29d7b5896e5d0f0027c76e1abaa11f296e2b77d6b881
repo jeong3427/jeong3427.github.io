@@ -1,0 +1,80 @@
+I"�+<p>데이터 한 줄마다 log_id가 각각 붙어 있고 team_id별로 몇 개의 log_id가 있는지 구하려는 게 목표</p>
+
+<p>동일한 종류의 데이터인데 1억 줄이 넘어서 메모리 에러가 발생했었음</p>
+
+<p>처음에 데이터 결과를 SQL로 빼내서 저장할 때 1.txt, 2.txt… 5개를 만들어둠</p>
+
+<p><strong>성공 코드</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#반복문으로 처리하여 성공한 코드
+</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+  
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">".txt"</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">"</span><span class="se">\t</span><span class="s">"</span><span class="p">)</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">).</span><span class="n">agg</span><span class="p">({</span><span class="s">'tp_acquire_log_id'</span><span class="p">:</span> <span class="s">'count'</span><span class="p">})</span>
+    <span class="n">df</span><span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
+ 
+<span class="c1"># team_id 별로 여러 개의 값이 있어서 다시 더해주기
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">).</span><span class="n">agg</span><span class="p">({</span><span class="s">'tp_acquire_log_id'</span><span class="p">:</span><span class="s">'sum'</span><span class="p">})</span>
+ 
+<span class="c1"># 내림차순 정렬
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s">'tp_acquire_log_id'</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="bp">False</span> <span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="../../../../img/2022-01-09-bulk_data/data.png" alt="data" style="zoom: 80%;" /></p>
+
+<hr />
+
+<p><strong>처음에 실패했던 코드</strong></p>
+
+<ul>
+  <li>총 1.5억 줄 정도 되다 보니 group by, count에서 에러 발생</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df3</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df4</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df5</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+
+
+<span class="n">df6</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">append</span><span class="p">([</span><span class="n">df2</span><span class="p">,</span><span class="n">df3</span><span class="p">,</span><span class="n">df4</span><span class="p">,</span><span class="n">df5</span><span class="p">],</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">df7</span> <span class="o">=</span> <span class="n">df6</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span> <span class="c1">#여기서 메모리 에러 발생 
+</span></code></pre></div></div>
+
+<hr />
+
+<p><strong>두 번째 실패했던 코드</strong></p>
+
+<ul>
+  <li>각각 group by 후에 더하기 시도
+    <ul>
+      <li>team_id 들이 df1_1 ~ df5_1에 공통적으로 있지 않으면 NaN 이 뜨면서 에러 발생</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df3</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df4</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df5</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+
+
+<span class="n">df1_1</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span>
+<span class="n">df2_1</span> <span class="o">=</span> <span class="n">df2</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span>
+<span class="n">df3_1</span> <span class="o">=</span> <span class="n">df3</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span>
+<span class="n">df4_1</span> <span class="o">=</span> <span class="n">df4</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span>
+<span class="n">df5_1</span> <span class="o">=</span> <span class="n">df5</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'team_id'</span><span class="p">)[</span><span class="s">'tp_acquire_log_id'</span><span class="p">].</span><span class="n">count</span><span class="p">()</span>
+ 
+ 
+<span class="n">df6</span> <span class="o">=</span> <span class="n">df1_1</span> <span class="o">+</span> <span class="n">df2_1</span> <span class="o">+</span> <span class="n">df3_1</span> <span class="o">+</span> <span class="n">df4_1</span> <span class="o">+</span> <span class="n">df5_1</span>
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df6</span><span class="p">)</span>
+<span class="n">df7</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s">'tp_acquire_log_id'</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+</code></pre></div></div>
+:ET

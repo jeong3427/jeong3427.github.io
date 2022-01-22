@@ -1,0 +1,153 @@
+I"�Q<p><strong>MySQL FULL OUTER JOIN 사용</strong></p>
+
+<ul>
+  <li>MySQL에서는 full outer join이 불가능해서 left join, right join을 하고 union을 해줘야 한다</li>
+  <li>클랜을 가입한 유저는 클랜id가 나오고 아닌 유저는 null이 나오도록</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">crt_date</span><span class="p">)</span> <span class="k">as</span> <span class="n">team_crt_date</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="err">클랜</span><span class="n">id</span> <span class="k">from</span> 
+ <span class="err">테이블</span><span class="mi">1</span> <span class="n">a</span> <span class="k">left</span> <span class="k">join</span> <span class="err">테이블</span><span class="mi">2</span> <span class="n">b</span>  
+ <span class="k">on</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="err">조건</span><span class="mi">1</span> <span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">&lt;</span> <span class="err">조건</span><span class="mi">2</span> 
+ <span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">'OK'</span> <span class="p">)</span>
+
+<span class="k">union</span>
+
+<span class="p">(</span><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">crt_date</span><span class="p">)</span> <span class="k">as</span> <span class="n">team_crt_date</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="err">클랜</span><span class="n">id</span> 
+ <span class="k">from</span> <span class="err">테이블</span><span class="mi">1</span> <span class="n">a</span> <span class="k">right</span> <span class="k">join</span> <span class="err">테이블</span><span class="mi">2</span> <span class="n">b</span>  
+ <span class="k">on</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> 
+ <span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="err">조건</span><span class="mi">1</span> <span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">&lt;</span> <span class="err">조건</span><span class="mi">2</span> 
+ <span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">'OK'</span> <span class="p">)</span> 
+ 
+ <span class="k">limit</span> <span class="mi">2</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>rownum과 distinct에 관하여 (distinct 관련해서 삽질한 경험)</strong></p>
+
+<ul>
+  <li>알고 싶은 것
+    <ul>
+      <li>패키지 A 또는 B 구매자의 팀id를 알아내고, 몇 명인지 바로 알기 위해 rownum을 붙이기</li>
+    </ul>
+  </li>
+  <li>
+    <p>근데 #1로 돌리니 중복이 생기고, #2는 select 다음 순서만 바꿨는데 아예 쿼리문이 작동을 안 했다</p>
+
+    <ul>
+      <li>
+        <p>why?</p>
+      </li>
+      <li>
+        <p>distinct는 컬럼의 값이 완벽히 같을 때만 작동하기 때문</p>
+        <ul>
+          <li>rownum을 붙여서 같지 않게 됨</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>동일한 질문</p>
+
+    <p>https://stackoverflow.com/questions/13146290/row-number-and-distinct-together</p>
+  </li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span><span class="mi">1</span> <span class="err">돌아감</span> <span class="n">but</span> <span class="err">중복</span> <span class="err">있음</span> <span class="o">-</span> <span class="err">삽질</span><span class="mi">1</span>
+<span class="k">select</span> <span class="k">distinct</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">team_name</span><span class="p">,</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">rownum</span> <span class="o">+</span><span class="mi">1</span> <span class="k">as</span> <span class="n">rownum</span> <span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="err">구매테이블</span> <span class="k">where</span> <span class="n">product_id</span> 
+ <span class="k">in</span> <span class="p">(</span><span class="s1">'ios 패키지 A'</span><span class="p">,</span>
+<span class="s1">'ios 패키지 B'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 A'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 B'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 A'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 B'</span><span class="p">)</span> <span class="p">)</span> <span class="n">a</span><span class="p">,</span> <span class="err">팀테이블</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="k">c</span> 
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">;</span>
+ 
+ 
+<span class="o">#</span><span class="mi">2</span> <span class="err">아예</span> <span class="err">안</span> <span class="err">돌아감</span> <span class="o">-</span> <span class="err">삽질</span><span class="mi">2</span>
+<span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">rownum</span> <span class="o">+</span><span class="mi">1</span> <span class="k">as</span> <span class="n">rownum</span><span class="p">,</span> <span class="k">distinct</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">team_name</span> <span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="err">구매테이블</span> <span class="k">where</span> <span class="n">crt_date</span> <span class="o">&gt;=</span> <span class="s1">'2021-02-10 12:00:00'</span>
+<span class="k">and</span>
+<span class="n">product_id</span> <span class="k">in</span> <span class="p">(</span><span class="s1">'ios 패키지 A'</span><span class="p">,</span>
+<span class="s1">'ios 패키지 B'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 A'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 B'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 A'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 B'</span><span class="p">)</span> <span class="p">)</span> <span class="n">a</span><span class="p">,</span> <span class="err">팀테이블</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="k">c</span> 
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">;</span>
+ 
+ 
+<span class="o">#</span><span class="mi">3</span> <span class="err">정답</span><span class="mi">1</span>
+<span class="k">select</span> <span class="k">c</span><span class="p">.</span><span class="n">rownum</span><span class="p">,</span> <span class="k">c</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">team_name</span>
+<span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="n">team_id</span><span class="p">,</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">rownum</span> <span class="o">+</span><span class="mi">1</span> <span class="k">as</span> <span class="n">rownum</span>
+<span class="k">from</span> <span class="err">구매테이블</span> <span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="n">b</span>
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="n">crt_date</span> <span class="o">&gt;=</span> <span class="s1">'2021-02-10 12:00:00'</span>
+<span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="n">product_id</span> <span class="k">in</span> <span class="p">(</span><span class="s1">'ios 패키지 A'</span><span class="p">,</span>
+<span class="s1">'ios 패키지 B'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 A'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 B'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 A'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 B'</span><span class="p">)</span>
+<span class="k">group</span> <span class="k">by</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span>
+<span class="k">order</span> <span class="k">by</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">)</span> <span class="k">c</span><span class="p">,</span> <span class="err">팀테이블</span> <span class="n">b</span>
+<span class="k">where</span> <span class="k">c</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">;</span>
+ 
+ 
+ 
+<span class="o">#</span><span class="mi">4</span> <span class="err">정답</span><span class="mi">2</span>
+<span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">rownum</span> <span class="o">+</span><span class="mi">1</span> <span class="k">as</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">team_name</span> <span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="k">distinct</span> <span class="err">팀</span><span class="n">id</span> <span class="k">from</span> <span class="err">구매테이블</span> <span class="k">where</span> <span class="n">crt_date</span> <span class="o">&gt;=</span> <span class="s1">'2021-02-10 12:00:00'</span>
+<span class="k">and</span>
+<span class="n">product_id</span> <span class="k">in</span> <span class="p">(</span><span class="s1">'ios 패키지 A'</span><span class="p">,</span>
+<span class="s1">'ios 패키지 B'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 A'</span><span class="p">,</span>
+<span class="s1">'안드로이드 패키지 B'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 A'</span><span class="p">,</span>
+<span class="s1">'원스토어 패키지 B'</span><span class="p">)</span> <span class="p">)</span> <span class="n">a</span><span class="p">,</span> <span class="err">팀테이블</span> <span class="n">b</span><span class="p">,</span> <span class="p">(</span><span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="k">c</span> <span class="k">where</span>
+<span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">;</span>
+ 
+ 
+<span class="o">#</span><span class="mi">5</span> <span class="err">프로덕트</span> <span class="err">테이블</span> <span class="err">이용한</span> <span class="err">정답</span>
+<span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">rownum</span> <span class="o">+</span><span class="mi">1</span> <span class="k">as</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">,</span> <span class="n">y</span><span class="p">.</span><span class="n">team_name</span> <span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="k">distinct</span> <span class="n">a</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="k">from</span> <span class="err">구매테이블</span> <span class="n">a</span><span class="p">,</span> <span class="err">프로덕트테이블</span> <span class="n">b</span> 
+ <span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="n">product_id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">product_id</span> <span class="k">and</span> <span class="n">b</span><span class="p">.</span><span class="n">ref_name</span> <span class="k">like</span> <span class="s1">'%패키지이름%'</span> 
+ <span class="k">and</span> <span class="n">a</span><span class="p">.</span><span class="n">crt_date</span> <span class="o">&gt;</span> <span class="s1">'2021-02-10 12:00:00'</span><span class="p">)</span> <span class="n">x</span><span class="p">,</span>
+<span class="err">팀테이블</span> <span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="k">select</span> <span class="o">@</span><span class="n">rownum</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">c</span>
+<span class="k">where</span> <span class="n">x</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span> <span class="o">=</span> <span class="n">y</span><span class="p">.</span><span class="err">팀</span><span class="n">id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>단계별 보상 획득한 클랜 숫자</strong></p>
+
+<ul>
+  <li>보상이 7단계가 있고 각 보상을 클리어한 데이트 컬럼이 7종류 (데이트1~7)</li>
+  <li>데이트에 데이터가 있으면 클리어, 없으면 클리어 못함</li>
+  <li>시즌정보로 컨트롤</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="err">시즌정보</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="err">클랜</span><span class="n">id</span><span class="p">)</span> <span class="k">as</span> <span class="n">total_clan</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">1</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_1</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">2</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_2</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">3</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_3</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">4</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_4</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">5</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_5</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">6</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_6</span><span class="p">,</span>
+<span class="k">count</span><span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">데이트</span><span class="mi">7</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span> <span class="k">then</span> <span class="mi">1</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">cw_7</span>
+<span class="k">from</span>
+<span class="err">클랜전테이블</span> <span class="o">#</span><span class="err">시즌정보</span> <span class="o">&gt;=</span> <span class="mi">20210114</span>
+<span class="k">group</span> <span class="k">by</span> <span class="err">시즌정보</span><span class="p">;</span>
+</code></pre></div></div>
+
+:ET

@@ -1,0 +1,343 @@
+I"�^<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#처음 공부했던 내용
+</span>
+<span class="mf">1.</span> <span class="n">엑셀</span> <span class="n">파일</span> <span class="n">불러오기</span>
+<span class="n">ipython에서</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pandas</span> <span class="n">외에</span><span class="p">,</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">xlrd</span> <span class="n">를</span> <span class="n">해야</span> <span class="n">pandas에서</span> <span class="n">엑셀</span> <span class="n">파일을</span> <span class="n">읽을</span> <span class="n">수</span> <span class="n">있음</span>
+
+<span class="n">pd</span><span class="p">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">'엑셀 파일명'</span><span class="p">,</span> <span class="n">sheet_name</span> <span class="o">=</span><span class="s">'시트명'</span><span class="p">)</span>
+
+<span class="o">+</span> <span class="n">pandas</span> <span class="n">작업</span> <span class="n">중인</span> <span class="n">폴더에</span> <span class="n">해당</span> <span class="n">파일이</span> <span class="n">있어야만</span> <span class="n">불러오기</span> <span class="n">가능</span> <span class="p">(</span><span class="n">아니면</span> <span class="n">파일</span> <span class="n">위치까지</span> <span class="n">지정</span><span class="p">)</span>
+<span class="n">파일</span> <span class="n">위치</span> <span class="n">지정</span> <span class="n">예시</span> <span class="p">:</span> <span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'C:/users/GD-hjim/report_tab_11320_2013_10_2019_11_0.csv'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">','</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s">'파일명_수정.xlsx'</span><span class="p">,</span> <span class="n">sheet_name</span> <span class="o">=</span><span class="s">'Sheet1'</span><span class="p">)</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>old</th>
+      <th>new</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.PNG</td>
+      <td>a.PNG</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10.PNG</td>
+      <td>b.PNG</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>11.PNG</td>
+      <td>c.PNG</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12.PNG</td>
+      <td>d.PNG</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>13.PNG</td>
+      <td>e.PNG</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>14.PNG</td>
+      <td>f.PNG</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>15.PNG</td>
+      <td>g.PNG</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>16.PNG</td>
+      <td>h.PNG</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>17.PNG</td>
+      <td>i.PNG</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>18.PNG</td>
+      <td>j.PNG</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>19.PNG</td>
+      <td>k.PNG</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2.PNG</td>
+      <td>l.PNG</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>20.PNG</td>
+      <td>m.PNG</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>21.PNG</td>
+      <td>n.PNG</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>22.PNG</td>
+      <td>o.PNG</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>23.PNG</td>
+      <td>p.PNG</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>24.PNG</td>
+      <td>q.PNG</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>25.PNG</td>
+      <td>r.PNG</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>26.PNG</td>
+      <td>s.PNG</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>27.PNG</td>
+      <td>t.PNG</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>28.PNG</td>
+      <td>u.PNG</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>29.PNG</td>
+      <td>v.PNG</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>3.PNG</td>
+      <td>w.PNG</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>4.PNG</td>
+      <td>x.PNG</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>5.PNG</td>
+      <td>y.PNG</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>6.PNG</td>
+      <td>z.PNG</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>7.PNG</td>
+      <td>hello.PNG</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>8.PNG</td>
+      <td>hi.PNG</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>9.PNG</td>
+      <td>welcome.PNG</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.</span> <span class="n">CSV</span> <span class="n">파일</span> <span class="n">불러오기</span>
+
+<span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'csv 파일명'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span><span class="s">','</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">csv</span> <span class="n">파일일</span> <span class="n">경우</span> <span class="n">sep은</span> <span class="n">생략</span> <span class="n">가능</span>
+
+<span class="n">sep은</span> <span class="n">구분자의</span> <span class="n">기준을</span> <span class="n">의미</span> <span class="o">-</span> <span class="n">csv파일은</span> <span class="n">콤마</span><span class="p">(,)</span> <span class="n">기준으로</span> <span class="n">나누기에</span> <span class="n">sep</span> <span class="o">=</span><span class="s">','</span><span class="n">을</span> <span class="n">사용</span>
+<span class="o">-</span> <span class="n">만일</span> <span class="o">|</span> <span class="n">기준으로</span> <span class="n">구분되는</span> <span class="n">txt</span> <span class="n">파일을</span> <span class="n">가져온다면</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'텍스트파일명'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'|'</span><span class="p">)</span> <span class="n">사용</span>
+<span class="o">-</span> <span class="n">구분자가</span> <span class="n">탭</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span> <span class="n">이라면</span> <span class="n">sep</span> <span class="o">=</span> <span class="s">'</span><span class="se">\t</span><span class="s">'</span>
+
+<span class="n">혹은</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s">'|'</span> <span class="n">사용해도</span> <span class="n">무관</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">3.</span> <span class="n">데이터에</span> <span class="n">헤더가</span> <span class="n">없을</span> <span class="n">때</span> <span class="n">불러오면서</span> <span class="n">헤더</span> <span class="n">만들기</span>
+
+<span class="o">-</span> <span class="n">헤더가</span> <span class="n">없는</span> <span class="n">데이터</span> <span class="n">파일을</span> <span class="n">불러오면</span> <span class="n">데이터</span> <span class="n">파일</span> <span class="n">맨</span> <span class="n">윗줄이</span> <span class="n">헤더가</span> <span class="n">되는</span> <span class="n">대참사</span> <span class="n">발생</span>
+<span class="o">-</span> <span class="n">불러올</span> <span class="n">때</span> <span class="n">다음과</span> <span class="n">같이</span> <span class="n">헤더를</span> <span class="n">넣어서</span> <span class="n">설정</span> <span class="n">가능</span>
+
+<span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span> <span class="s">'파일명'</span><span class="p">,</span>  <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s">'헤더1'</span><span class="p">,</span> <span class="s">'헤더2'</span><span class="p">,</span> <span class="s">'헤더3'</span><span class="p">],</span>  <span class="n">header</span> <span class="o">=</span> <span class="bp">None</span><span class="p">)</span>
+
+
+<span class="n">그</span> <span class="n">외에</span> <span class="n">이미</span> <span class="n">불러온</span> <span class="n">파일에다</span> <span class="n">헤더를</span> <span class="n">넣으려면</span> 
+
+<span class="n">데이터프레임</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s">'헤더1'</span><span class="p">,</span> <span class="s">'헤더2'</span><span class="p">,</span> <span class="s">'헤더3'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">4.</span> <span class="n">데이터</span> <span class="n">프레임</span> <span class="n">생성하기</span>
+
+<span class="mi">1</span><span class="p">)</span> <span class="n">이름</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span><span class="s">'헤더'</span> <span class="p">:</span> <span class="s">'값'</span><span class="p">,</span> <span class="s">'헤더2'</span> <span class="p">:</span> <span class="s">'값2'</span><span class="p">}</span>
+             <span class="p">{</span><span class="s">'헤더'</span> <span class="p">:</span> <span class="s">'값3'</span><span class="p">,</span> <span class="s">'헤더2'</span> <span class="p">:</span> <span class="s">'값4'</span><span class="p">}</span> 
+            <span class="p">]</span>
+
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">friend_dict_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'name'</span><span class="p">:</span><span class="s">'John'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s">'job'</span><span class="p">:</span><span class="s">'student'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">'name'</span><span class="p">:</span><span class="s">'Nate'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span> <span class="s">'job'</span><span class="p">:</span><span class="s">'teacher'</span><span class="p">}</span>
+<span class="p">]</span>
+
+
+<span class="n">데이터</span> <span class="n">순서</span> <span class="n">바꾸기</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'job'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">]]</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="p">)</span> <span class="n">처음부터</span> <span class="n">데이터</span> <span class="n">순서를</span> <span class="n">지정해서</span> <span class="n">데이터</span> <span class="n">프레임</span> <span class="n">생성하기</span>
+
+<span class="n">collections</span> <span class="n">불러와서</span> <span class="n">OrderedDict</span> <span class="n">로</span> <span class="n">만들면</span> <span class="n">처음</span> <span class="n">부터</span> <span class="n">순서를</span> <span class="n">지정할</span> <span class="n">수</span> <span class="n">있다</span>
+<span class="n">이름</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">[(</span><span class="n">헤더</span><span class="p">,[</span><span class="n">데이터</span> <span class="n">리스트</span><span class="p">]),</span> <span class="p">(</span><span class="n">헤더2</span><span class="p">,</span> <span class="p">[</span><span class="n">데이터</span> <span class="n">리스트2</span><span class="p">])]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrmae</span><span class="p">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">이름</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+ 
+<span class="n">friend_ordered_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+<span class="p">[</span>
+    <span class="p">(</span><span class="s">'name'</span><span class="p">,</span> <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="s">'Nate'</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s">'age'</span><span class="p">,[</span><span class="mi">25</span><span class="p">,</span><span class="mi">30</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s">'job'</span><span class="p">,</span> <span class="p">[</span><span class="s">'student'</span><span class="p">,</span><span class="s">'teacher'</span><span class="p">])</span>
+    
+<span class="p">])</span>
+ 
+<span class="n">df</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">friend_ordered_dict</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span><span class="p">)</span> <span class="n">리스트를</span> <span class="n">사용해서</span> <span class="n">만들기</span> <span class="o">-</span> <span class="n">제일</span> <span class="n">쉬워</span> <span class="n">보임</span>
+
+<span class="n">이름</span> <span class="o">=</span> <span class="p">[[</span><span class="n">데이터</span> <span class="n">리스트</span><span class="p">],</span> <span class="p">[</span><span class="n">데이터</span> <span class="n">리스트2</span><span class="p">]]</span>
+<span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s">'컬럼1'</span><span class="p">,</span> <span class="s">'컬럼2'</span><span class="p">,</span> <span class="s">'컬럼3'</span><span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">이름</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span> 
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Nate'</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s">'teacher'</span><span class="p">]</span>
+<span class="p">]</span>
+ 
+<span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">,</span><span class="s">'job'</span> <span class="p">]</span>
+ 
+<span class="n">df</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">friend_list</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">4</span><span class="p">)</span> <span class="n">from_items를</span> <span class="n">사용해서</span> <span class="n">만들기</span>
+
+<span class="n">이름</span> <span class="o">=</span> <span class="p">[(</span><span class="n">헤더</span><span class="p">,[</span><span class="n">데이터</span> <span class="n">리스트</span><span class="p">]),</span> <span class="p">(</span><span class="n">헤더2</span><span class="p">,</span> <span class="p">[</span><span class="n">데이터</span> <span class="n">리스트2</span><span class="p">])]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_items</span><span class="p">(</span><span class="n">이름</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+ 
+<span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="s">'Nate'</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s">'age'</span><span class="p">,</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s">'job'</span><span class="p">,</span> <span class="p">[</span><span class="s">'student'</span><span class="p">,</span><span class="s">'teacher'</span><span class="p">]]</span>
+<span class="p">]</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_items</span><span class="p">(</span><span class="n">friend_list</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">5</span><span class="p">)</span> <span class="n">인덱스를</span> <span class="n">따로</span> <span class="n">설정하기</span>
+
+<span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">데이터리스트</span> <span class="n">설정한</span> <span class="n">이름</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s">'행1'</span><span class="p">,</span> <span class="s">'행2'</span><span class="p">,</span> <span class="s">'행3'</span> <span class="p">...],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'열1'</span><span class="p">,</span> <span class="s">'열2'</span><span class="p">...]</span> 
+             
+<span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'age'</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s">'job'</span> <span class="p">:</span><span class="s">'student'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">'age'</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s">'job'</span> <span class="p">:</span><span class="s">'developer'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">'age'</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s">'job'</span> <span class="p">:</span><span class="s">'teacher'</span><span class="p">}</span>
+<span class="p">]</span>
+             
+             
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">friend_list</span><span class="p">,</span>
+                 <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="s">'Jenny'</span><span class="p">,</span> <span class="s">'Nate'</span><span class="p">],</span>
+                 <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'age'</span><span class="p">,</span><span class="s">'job'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">5.</span> <span class="n">만든</span> <span class="n">파일</span> <span class="n">csv</span> <span class="n">로</span> <span class="n">저장하기</span>
+<span class="n">df</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'파일명.csv'</span><span class="p">)</span>
+
+<span class="n">사실</span> <span class="n">뒤의</span> <span class="n">인덱스와</span> <span class="n">헤더가</span> <span class="n">디폴트인</span> <span class="n">것</span>
+<span class="n">df</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'파일명.csv'</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+
+<span class="n">인덱스를</span> <span class="n">안</span> <span class="n">보이게</span> <span class="n">저장하려면</span> <span class="n">인덱스를</span> <span class="n">False로</span><span class="p">,</span> <span class="n">헤더를</span> <span class="n">안</span> <span class="n">보이게</span> <span class="n">하려면</span> <span class="n">헤더를</span> <span class="n">False로</span> <span class="n">바꿔서</span> <span class="n">실행하면</span> <span class="n">된다</span> 
+
+<span class="bp">None</span> <span class="n">값이</span> <span class="n">있을</span> <span class="n">경우</span><span class="p">,</span> <span class="n">null로</span> <span class="n">표현하고</span> <span class="n">싶다면</span>
+<span class="n">df</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">'파일명.csv'</span><span class="p">,</span> <span class="n">na_rep</span> <span class="o">=</span> <span class="s">'null'</span><span class="p">)</span>
+</code></pre></div></div>
+:ET

@@ -1,4 +1,4 @@
-I"s<p><strong>with rollup 사용 예시</strong></p>
+I"�%<p><strong>with rollup 사용 예시</strong></p>
 
 <ul>
   <li>쿼리 마지막에 rollup을 붙이면 총합계까지 나온다</li>
@@ -98,5 +98,28 @@
 <span class="k">select</span> <span class="err">선수</span><span class="n">id</span><span class="p">,</span> <span class="n">skill_codes</span> <span class="k">from</span> <span class="err">선수</span><span class="n">_</span><span class="err">테이블</span> <span class="n">p</span><span class="p">,</span> <span class="err">스킬</span><span class="n">_</span><span class="err">테이블</span> <span class="n">s</span> 
 <span class="k">where</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_type</span> <span class="o">=</span> <span class="s1">'타입1'</span> <span class="k">and</span> <span class="n">p</span><span class="p">.</span><span class="n">skill_codes</span> <span class="k">like</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'%'</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_code</span><span class="p">,</span> <span class="s1">'%'</span><span class="p">);</span>
 </code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>json 처리</strong></p>
+
+<ul>
+  <li>simple_stat이라는 컬럼에 batStat과 pitStat으로 나눠져 있고</li>
+  <li>각각에 다양한 값들이 들어가 있었을 때 json_extract 사용</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">player_id</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.batStat.contact'</span><span class="p">)</span> <span class="k">as</span> <span class="n">contact</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.batStat.gapPow'</span><span class="p">)</span> <span class="k">as</span> <span class="n">gapPow</span><span class="p">,</span>
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.pitStat.control'</span><span class="p">)</span> <span class="k">as</span> <span class="n">control</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.pitStat.stuff'</span><span class="p">)</span> <span class="k">as</span> <span class="n">stuff</span>
+<span class="k">from</span> <span class="n">player</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
 
 :ET

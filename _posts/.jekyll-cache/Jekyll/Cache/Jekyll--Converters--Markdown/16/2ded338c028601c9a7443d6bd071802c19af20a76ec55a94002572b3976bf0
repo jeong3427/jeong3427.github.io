@@ -1,0 +1,48 @@
+I"d<p><img src="../../../../img/2021-12-24-tb-donut/이미지1.png" alt="이미지1" /></p>
+
+<hr />
+
+<p><strong>1. 수익에서 카테고리별 비율을 알아보기</strong></p>
+
+<ul>
+  <li>강의에서는 Sale 중 Returned를 사용했는데 null 값에서 에러가 생겨서 profit 중 product 사용</li>
+  <li>profit 합계를 행에 넣고 색상에 product</li>
+  <li>차트 모양을 파이차트로 변경</li>
+</ul>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지2.png" alt="이미지2" /></p>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지3.png" alt="이미지3" /></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p><strong>2. 복제할 차트 만들기</strong></p>
+
+<ul>
+  <li>열에 min(1) 입력 후 컨트롤 키로 min을 누르면서 옆으로 당기면 똑같은 차트 2개 생성</li>
+  <li>두 번째 차트 마크에서 다 날리고 합계를 세부 정보로 변경하면 두 개가 서로 다른 크기로 조절됨</li>
+</ul>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지4.png" alt="이미지4" /></p>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지5.png" alt="이미지5" /></p>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지6.png" alt="이미지6" /></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p><strong>3. 이중 축 처리</strong></p>
+
+<ul>
+  <li>두 번째 원을 이중 축으로 처리하면 하나의 원으로 합쳐짐</li>
+  <li>색상을 흰색으로 바꾸면 도넛차트 완성</li>
+</ul>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지7.png" alt="이미지7" /></p>
+
+<p><img src="../../../../img/2021-12-24-tb-donut/이미지8.png" alt="이미지8" /></p>
+:ET

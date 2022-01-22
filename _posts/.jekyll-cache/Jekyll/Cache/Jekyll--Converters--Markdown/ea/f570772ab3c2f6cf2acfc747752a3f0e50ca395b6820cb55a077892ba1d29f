@@ -1,0 +1,125 @@
+I"�%<p><strong>with rollup 사용 예시</strong></p>
+
+<ul>
+  <li>쿼리 마지막에 rollup을 붙이면 총합계까지 나온다</li>
+  <li>대신 NULL이 나오고 ORDER BY와 함께 쓸 수 없어서 서브 쿼리와 IFNULL 활용</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">ifnull</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">team_id</span><span class="p">,</span> <span class="s1">'TOTAL'</span><span class="p">)</span> <span class="k">AS</span> <span class="n">team_id</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">purchase_cnt</span> 
+<span class="k">from</span> 
+<span class="p">(</span><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="n">team_id</span><span class="p">,</span> <span class="k">count</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="err">구매</span><span class="n">id</span><span class="p">)</span> <span class="k">as</span> <span class="n">purchase_cnt</span> 
+ <span class="k">from</span> <span class="err">구매테이블</span> <span class="n">a</span><span class="p">,</span> <span class="err">프로덕트테이블</span> <span class="n">b</span> 
+ <span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="err">프로덕트넘버</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="err">프로덕트넘버</span>  
+ <span class="k">and</span> <span class="err">프로덕트테이블</span><span class="n">_</span><span class="err">조건</span>
+ <span class="k">group</span> <span class="k">by</span> <span class="n">a</span><span class="p">.</span><span class="n">team_id</span> 
+ <span class="k">with</span> <span class="k">rollup</span><span class="p">)</span> <span class="n">x</span> 
+ <span class="k">order</span> <span class="k">by</span> <span class="n">x</span><span class="p">.</span><span class="n">purchase_cnt</span> <span class="k">desc</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="../../../../img/2021-12-05-SQL3/image.png" alt="image" /></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>이탈 유저 구하는 쿼리</strong></p>
+
+<ul>
+  <li>datediff 함수 사용</li>
+  <li>https://www.duck.pe.kr/213</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">a</span><span class="p">.</span><span class="n">team_id</span><span class="p">,</span> <span class="n">date_format</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">crt_date</span><span class="p">,</span> <span class="s1">'%Y-%m-%d'</span><span class="p">)</span> <span class="k">as</span> <span class="n">crt_date</span> <span class="k">from</span>
+<span class="p">(</span><span class="k">select</span> <span class="n">team_id</span><span class="p">,</span> <span class="n">datediff</span><span class="p">(</span><span class="n">date_format</span><span class="p">(</span><span class="n">now</span><span class="p">(),</span> <span class="s1">'%Y-%m-%d'</span><span class="p">),</span> <span class="n">last_login_date</span><span class="p">)</span> <span class="k">as</span> <span class="n">leaving</span><span class="p">,</span> <span class="n">crt_date</span> 
+ <span class="k">from</span> <span class="err">팀테이블</span> <span class="k">where</span> <span class="n">status</span> <span class="o">=</span> <span class="s1">'OK'</span> <span class="k">and</span> <span class="n">crt_date</span> <span class="o">&gt;</span> <span class="s1">'2020-05-05'</span><span class="p">)</span> <span class="n">a</span>
+<span class="k">where</span> <span class="n">a</span><span class="p">.</span><span class="n">leaving</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>mid 함수</strong></p>
+
+<ul>
+  <li>cpm arena 평균 승수 구할 때 사용</li>
+  <li>log_type이 ‘‘수령’‘일 때 다음과 같이 승수가 기록됨
+    <ul>
+      <li>ref_value에 CARENA_WIN_2 -&gt; 2승, CARENA_WIN_10 -&gt; 10승, CARENA_WIN_0 -&gt; 0승</li>
+      <li>mid(ref_value, 12, 2) -&gt; 12번째부터 잘라서 2개</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">mid</span><span class="p">(</span><span class="n">ref_value</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">as</span> <span class="n">win</span> <span class="k">from</span> <span class="err">아레나</span><span class="n">_</span><span class="err">로그</span><span class="n">_</span><span class="err">테이블</span> <span class="k">where</span> <span class="n">log_type</span> <span class="o">=</span> <span class="s1">'수령'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>ANY, SOME, ALL 예시</strong></p>
+
+<ul>
+  <li>https://ggmouse.tistory.com/12</li>
+  <li>ANY = SOME = 서브 쿼리의 MIN 값 필터링에 사용</li>
+  <li>ALL = 서브 쿼리의 MAX 값 필터링에 사용</li>
+</ul>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>CONCAT 예시</strong></p>
+
+<ul>
+  <li>문자열 합성에 사용</li>
+  <li>선수_테이블에는 skill_codes 라는 컬럼에 여러 종류의 스킬이 들어가 있음
+    <ul>
+      <li>ex. [“스킬1”, “스킬2”]</li>
+    </ul>
+  </li>
+  <li>스킬_테이블에는 따옴표와 대괄호 없이 스킬1 로 저장</li>
+  <li>특정 스킬 타입을 가진 선수id를 검색할 때 사용</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="err">선수</span><span class="n">id</span><span class="p">,</span> <span class="n">skill_codes</span> <span class="k">from</span> <span class="err">선수</span><span class="n">_</span><span class="err">테이블</span> <span class="n">p</span><span class="p">,</span> <span class="err">스킬</span><span class="n">_</span><span class="err">테이블</span> <span class="n">s</span> 
+<span class="k">where</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_type</span> <span class="o">=</span> <span class="s1">'타입1'</span> <span class="k">and</span> <span class="n">p</span><span class="p">.</span><span class="n">skill_codes</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'["'</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_code</span><span class="p">,</span> <span class="s1">'"]'</span><span class="p">);</span>
+
+
+<span class="k">select</span> <span class="err">선수</span><span class="n">id</span><span class="p">,</span> <span class="n">skill_codes</span> <span class="k">from</span> <span class="err">선수</span><span class="n">_</span><span class="err">테이블</span> <span class="n">p</span><span class="p">,</span> <span class="err">스킬</span><span class="n">_</span><span class="err">테이블</span> <span class="n">s</span> 
+<span class="k">where</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_type</span> <span class="o">=</span> <span class="s1">'타입1'</span> <span class="k">and</span> <span class="n">p</span><span class="p">.</span><span class="n">skill_codes</span> <span class="k">like</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'%'</span><span class="p">,</span> <span class="n">s</span><span class="p">.</span><span class="n">skill_code</span><span class="p">,</span> <span class="s1">'%'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<p><strong>json 처리</strong></p>
+
+<ul>
+  <li>simple_stat이라는 컬럼에 batStat과 pitStat으로 나눠져 있고</li>
+  <li>각각에 다양한 값들이 들어가 있었을 때 json_extract 사용</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">player_id</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.batStat.contact'</span><span class="p">)</span> <span class="k">as</span> <span class="n">contact</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.batStat.gapPow'</span><span class="p">)</span> <span class="k">as</span> <span class="n">gapPow</span><span class="p">,</span>
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.pitStat.control'</span><span class="p">)</span> <span class="k">as</span> <span class="n">control</span><span class="p">,</span> 
+<span class="n">json_extract</span><span class="p">(</span><span class="n">simple_stat</span><span class="p">,</span> <span class="s1">'$.pitStat.stuff'</span><span class="p">)</span> <span class="k">as</span> <span class="n">stuff</span>
+<span class="k">from</span> <span class="n">player</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+:ET

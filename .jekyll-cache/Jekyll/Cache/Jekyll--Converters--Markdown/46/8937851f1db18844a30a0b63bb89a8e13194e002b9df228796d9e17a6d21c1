@@ -1,0 +1,109 @@
+I"�L<p><img src="../../../../img/2022-01-22-aws-stock/slack_stock_bot.PNG" alt="slack_stock_bot" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># -*- coding:utf-8 -*-
+</span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">yfinance</span> <span class="k">as</span> <span class="n">yf</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_finance</span> <span class="kn">import</span> <span class="n">candlestick_ohlc</span>
+<span class="kn">import</span> <span class="nn">matplotlib.dates</span> <span class="k">as</span> <span class="n">mpl_dates</span>
+<span class="kn">from</span> <span class="nn">slack_sdk</span> <span class="kn">import</span> <span class="n">WebClient</span>
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">WebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s">"토큰 코드"</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s">"isBase64Encoded"</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">"statusCode"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s">"headers"</span><span class="p">:</span> <span class="p">{</span><span class="s">"X-Slack-No-Retry"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s">"body"</span><span class="p">:</span> <span class="s">""</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s">'headers'</span><span class="p">][</span><span class="s">'x-slack-retry-num'</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">slack_body</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"body"</span><span class="p">)</span>
+    <span class="n">slack_event</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">slack_body</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">slack_event</span><span class="p">[</span><span class="s">'event'</span><span class="p">][</span><span class="s">'channel'</span><span class="p">]</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">slack_event</span><span class="p">[</span><span class="s">'event'</span><span class="p">][</span><span class="s">'text'</span><span class="p">]</span>
+
+
+    <span class="k">if</span> <span class="s">"challenge"</span> <span class="ow">in</span> <span class="n">slack_event</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">'statusCode'</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="s">'body'</span><span class="p">:</span> <span class="n">slack_event</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"challenge"</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    
+    <span class="k">if</span> <span class="n">txt</span><span class="p">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">'티커는'</span><span class="p">):</span>
+        <span class="n">ticker</span><span class="o">=</span><span class="n">txt</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        
+        <span class="n">pd</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">display</span><span class="p">.</span><span class="n">float_format</span> <span class="o">=</span> <span class="s">'{:.2f}'</span><span class="p">.</span><span class="nb">format</span>
+        
+        <span class="c1">#원하는 주식의 내용들을 가져오기
+</span>        <span class="n">data</span><span class="o">=</span><span class="n">yf</span><span class="p">.</span><span class="n">Ticker</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+		
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span> 
+            <span class="c1">#잘못 입력할 경우
+</span>            <span class="n">client</span><span class="p">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="s">"티커를 확인해주세요"</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#y finance info 내용들 중 필요한 정보
+</span>            <span class="n">stock_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">[</span><span class="s">'longName'</span><span class="p">]</span>
+            <span class="n">stock_currency</span><span class="o">=</span><span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">[</span><span class="s">'currency'</span><span class="p">]</span>
+
+            <span class="c1">#3mo는 그래프로 만들고 1mo는 잘라서 텍스트 그래프로 사용
+</span>            <span class="n">data_3mo</span> <span class="o">=</span> <span class="n">yf</span><span class="p">.</span><span class="n">download</span><span class="p">(</span><span class="n">tickers</span><span class="o">=</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="s">'</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="s">"3mo"</span><span class="p">).</span><span class="n">set_axis</span><span class="p">([</span><span class="s">'시가'</span><span class="p">,</span><span class="s">'고가'</span><span class="p">,</span><span class="s">'저가'</span><span class="p">,</span><span class="s">'종가'</span><span class="p">,</span><span class="s">'조정 종가'</span><span class="p">,</span><span class="s">'거래량'</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">data_1mo</span> <span class="o">=</span> <span class="n">yf</span><span class="p">.</span><span class="n">download</span><span class="p">(</span><span class="n">tickers</span><span class="o">=</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="s">'</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="s">"1mo"</span><span class="p">).</span><span class="n">set_axis</span><span class="p">([</span><span class="s">'시가'</span><span class="p">,</span><span class="s">'고가'</span><span class="p">,</span><span class="s">'저가'</span><span class="p">,</span><span class="s">'종가'</span><span class="p">,</span><span class="s">'조정 종가'</span><span class="p">,</span><span class="s">'거래량'</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+            <span class="n">data_1mo</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+            <span class="c1">#strftime 처리 안 하면 시간까지 출력돼서 잘라내기
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_1mo</span><span class="p">[</span><span class="s">'Date'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'%Y-%m-%d'</span><span class="p">)</span>
+
+            <span class="c1">#dataframe에서 전날 대비 계산하려고 한 칸씩 내리기
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="s">'전날'</span><span class="p">]</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">[</span><span class="s">'조정 종가'</span><span class="p">].</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1">#퍼센트 타입으로 표기 .2는 소수점 둘째자리까지
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="s">'전날 대비'</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">data_1mo</span><span class="p">[</span><span class="s">'조정 종가'</span><span class="p">]</span><span class="o">-</span><span class="n">data_1mo</span><span class="p">[</span><span class="s">'전날'</span><span class="p">])</span><span class="o">/</span><span class="n">data_1mo</span><span class="p">[</span><span class="s">'전날'</span><span class="p">]).</span><span class="nb">apply</span><span class="p">(</span><span class="s">'{:.2%}'</span><span class="p">.</span><span class="nb">format</span><span class="p">)</span>
+
+            <span class="c1">#끝의 5일치만 보여주기
+</span>            <span class="n">data_5d</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">data_5d</span> <span class="o">=</span> <span class="n">data_5d</span><span class="p">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="s">'Date'</span><span class="p">,</span><span class="s">'시가'</span><span class="p">,</span><span class="s">'고가'</span><span class="p">,</span><span class="s">'종가'</span><span class="p">,</span><span class="s">'전날 대비'</span><span class="p">,</span><span class="s">'거래량'</span><span class="p">]]</span>
+
+            <span class="c1">#슬랙에 보내기
+</span>            <span class="n">text_graph</span><span class="o">=</span> <span class="n">tabulate</span><span class="p">(</span><span class="n">data_5d</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span><span class="s">'keys'</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="s">'presto'</span><span class="p">,</span> <span class="n">showindex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">client</span><span class="p">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="s">"주식 이름은 : "</span><span class="o">+</span> <span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">stock_name</span><span class="si">}</span><span class="s">'</span><span class="o">+</span><span class="s">"  거래 화폐는 : "</span><span class="o">+</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">stock_currency</span><span class="si">}</span><span class="s">'</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">client</span><span class="p">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="n">text_graph</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="c1">#3개월치 캔들스틱
+</span>            <span class="c1">#캔들스틱으로 만들기 위한 준비
+</span>            <span class="n">plt</span><span class="p">.</span><span class="n">style</span><span class="p">.</span><span class="n">use</span><span class="p">(</span><span class="s">'ggplot'</span><span class="p">)</span>
+            <span class="n">chart_data</span> <span class="o">=</span> <span class="n">data_3mo</span><span class="p">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">ohlc</span> <span class="o">=</span> <span class="n">chart_data</span><span class="p">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s">'Date'</span><span class="p">,</span> <span class="s">'시가'</span><span class="p">,</span> <span class="s">'고가'</span><span class="p">,</span> <span class="s">'저가'</span><span class="p">,</span> <span class="s">'종가'</span><span class="p">]]</span>
+            <span class="n">ohlc</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">ohlc</span><span class="p">[</span><span class="s">'Date'</span><span class="p">])</span>
+            <span class="n">ohlc</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ohlc</span><span class="p">[</span><span class="s">'Date'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="n">mpl_dates</span><span class="p">.</span><span class="n">date2num</span><span class="p">)</span>
+            <span class="n">ohlc</span> <span class="o">=</span> <span class="n">ohlc</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="c1"># 표 만들기 - 상승은 빨간색, 하강은 파랑색
+</span>            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">()</span>
+            <span class="n">candlestick_ohlc</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ohlc</span><span class="p">.</span><span class="n">values</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">colorup</span><span class="o">=</span><span class="s">'red'</span><span class="p">,</span> <span class="n">colordown</span><span class="o">=</span><span class="s">'blue'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># 레이블과 제목
+</span>            <span class="n">ax</span><span class="p">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">'Date'</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Price'</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">stock_name</span><span class="si">}</span><span class="s">'</span><span class="o">+</span><span class="s">" Recent 3 Months Close"</span><span class="p">)</span>
+
+            <span class="c1"># date 표기 처리 및 표 최대로 키우기
+</span>            <span class="n">date_format</span> <span class="o">=</span> <span class="n">mpl_dates</span><span class="p">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s">'%Y-%m-%d'</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">.</span><span class="n">xaxis</span><span class="p">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+            <span class="n">fig</span><span class="p">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+            <span class="c1"># labmda tmp에 저장하고 슬랙에 보내기
+</span>            <span class="n">os</span><span class="p">.</span><span class="n">chdir</span><span class="p">(</span><span class="s">'/tmp'</span><span class="p">)</span>
+            <span class="n">plt</span><span class="p">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">"stock_image.png"</span><span class="p">)</span>
+
+            <span class="n">client</span><span class="p">.</span><span class="n">files_upload</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="s">"stock_image.png"</span><span class="p">,</span><span class="n">channels</span><span class="o">=</span><span class="n">ch</span><span class="p">)</span>
+
+</code></pre></div></div>
+:ET

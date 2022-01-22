@@ -1,0 +1,95 @@
+I"�/<p>로스터의 모든 정보가 json 형식으로 담겨 있는 데이터를 가져와서</p>
+
+<p>로스터 정보대로 통계 자료를 구했던 내용</p>
+
+<ul>
+  <li>흔해 조합 vs 해흔 조합</li>
+  <li>로스터의 일반 정보(플레이어id) 뿐만 아니라 potential, skill, trait 등 모든 내용이 담겨 있었음</li>
+</ul>
+
+<p>filezilla에서 DB 내용을 꺼내오자 디코딩이 필요한 텍스트로 나와서 디코딩 내용까지 포함</p>
+
+<p><img src="../../../../img/2022-01-02-json2/json2.png" alt="json2" style="zoom:67%;" /></p>
+
+<p>하나의 코어로 처리하려 하자 너무 오래 걸려서 병렬 처리한 내용</p>
+
+<ul>
+  <li>그럼에도 jupyter notebook에서는 30분 이상 소요</li>
+  <li>vscode에서 처리하면 100초 내외</li>
+</ul>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">zlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">time</span>
+ 
+<span class="c1"># 요상한 텍스트 형식을 json으로 디코딩
+</span><span class="k">def</span> <span class="nf">json_decode1</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">base64</span><span class="p">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="n">json</span> <span class="o">=</span> <span class="n">zlib</span><span class="p">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">json_decode2</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+    <span class="n">df_r</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">df_r</span> <span class="o">=</span> <span class="n">df_r</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">df_r</span>
+ 
+ 
+<span class="c1"># 워낙 오래 걸리다 보니 병렬처리
+</span><span class="k">def</span> <span class="nf">parallel_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="n">df_split</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">)</span> <span class="c1">#코어 수만큼 쪼개기
+</span>    <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">num_cores</span><span class="p">)</span> <span class="c1">#코어 수만큼 Pool 생성
+</span>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pool</span><span class="p">.</span><span class="nb">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">df_split</span><span class="p">))</span> <span class="c1">#쪼갠 df에 각각 func 적용해서 다시 합치기
+</span>    <span class="n">pool</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pool</span><span class="p">.</span><span class="n">join</span><span class="p">()</span> <span class="c1">#모든 작업이 끝날 때까지 대기
+</span>    <span class="k">return</span> <span class="n">df</span>
+ 
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+ 
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'roster.txt'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+    <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="p">.</span><span class="n">cpu_count</span><span class="p">()</span>
+ 
+    <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'players'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="n">json_decode1</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">decode</span><span class="p">(</span><span class="s">"utf-8"</span><span class="p">)</span> <span class="c1"># 앞에 bytes 형식 제거
+</span>    <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">'player_info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'players'</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s">'player_info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'player_info'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+ 
+    <span class="n">df_result</span> <span class="o">=</span> <span class="n">parallel_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'player_info'</span><span class="p">],</span> <span class="n">json_decode2</span><span class="p">)</span>
+
+    <span class="c1"># pl_id별로 들고 있는 스킬1, 스킬2만 필터링 
+</span>    <span class="n">skill</span> <span class="o">=</span> <span class="n">df_result</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s">'skill_1'</span><span class="p">,</span><span class="s">'skill_2'</span><span class="p">])</span>
+
+    <span class="c1"># 스킬 조합끼리 통계 내는 함수 
+</span>    <span class="k">def</span> <span class="nf">array_result</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">skill1</span><span class="p">,</span> <span class="n">skill2</span><span class="p">):</span>
+        <span class="n">df_skill</span> <span class="o">=</span> <span class="n">df</span><span class="p">[((</span><span class="n">df</span><span class="p">.</span><span class="n">skill_1</span> <span class="o">==</span> <span class="n">skill1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">skill_2</span> <span class="o">==</span> <span class="n">skill2</span><span class="p">))</span> 
+        <span class="o">&amp;</span> <span class="p">((</span><span class="n">df</span><span class="p">.</span><span class="n">skill_1</span> <span class="o">==</span> <span class="n">skill2</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">skill_2</span> <span class="o">==</span> <span class="n">skill2</span><span class="p">))].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="n">df_skill</span><span class="p">[</span><span class="s">'array'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_skill</span><span class="p">[</span><span class="s">'skill_1'</span><span class="p">]</span> <span class="o">+</span> <span class="s">" &amp; "</span> <span class="o">+</span> <span class="n">df_skill</span><span class="p">[</span><span class="s">'skill_2'</span><span class="p">]</span>
+        <span class="n">df_skill_result</span> <span class="o">=</span> <span class="n">df_skill</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'array'</span><span class="p">]).</span><span class="n">agg</span><span class="p">({</span><span class="s">'index'</span><span class="p">:</span><span class="s">'count'</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">df_skill_result</span>
+
+
+
+    <span class="n">result1</span> <span class="o">=</span> <span class="n">array_result</span><span class="p">(</span><span class="n">skill</span><span class="p">,</span><span class="s">'A'</span><span class="p">,</span><span class="s">'B'</span><span class="p">)</span> <span class="c1">#특정 스킬 통계
+</span>    <span class="n">result2</span> <span class="o">=</span> <span class="n">array_result</span><span class="p">(</span><span class="n">skill</span><span class="p">,</span><span class="s">'C'</span><span class="p">,</span><span class="s">'D'</span><span class="p">)</span> <span class="c1">#특정 스킬 통계2
+</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">result1</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">result2</span><span class="p">)</span>
+
+
+    <span class="k">print</span><span class="p">(</span><span class="s">"time :"</span><span class="p">,</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+</code></pre></div></div>
+
+:ET

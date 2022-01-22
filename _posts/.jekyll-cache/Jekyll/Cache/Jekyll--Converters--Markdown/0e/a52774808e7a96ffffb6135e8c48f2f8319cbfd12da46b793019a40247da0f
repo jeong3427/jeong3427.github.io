@@ -1,0 +1,133 @@
+I"�Q<p>복잡한 형식으로 DB에 저장된 데이터</p>
+
+<ul>
+  <li>형식</li>
+</ul>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+</span><span class="nl">"category1"</span><span class="p">:[{</span><span class="nl">"id"</span><span class="p">:</span><span class="mi">123456</span><span class="p">,</span><span class="w"> </span><span class="nl">"loc"</span><span class="p">:</span><span class="s2">"b1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nl">"id"</span><span class="p">:</span><span class="mi">13579</span><span class="p">,</span><span class="nl">"loc"</span><span class="p">:</span><span class="s2">"b2"</span><span class="p">}],</span><span class="w">
+</span><span class="nl">"category2"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">123</span><span class="p">,</span><span class="mi">456</span><span class="p">,</span><span class="mi">789</span><span class="p">,</span><span class="mi">1011</span><span class="p">],</span><span class="w">
+</span><span class="nl">"category3"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">246810</span><span class="p">,</span><span class="w">
+</span><span class="nl">"category4"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+</span><span class="nl">"category5"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nl">"info"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"general"</span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<hr />
+
+<p><strong><em>json 처리 방식</em></strong></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">apply(lambda x : json.loads(x))</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">apply(lambda x : x['딕셔너리 키 값']</code>)</p>
+
+    <p><code class="language-plaintext highlighter-rouge">apply(lambda x : json.dumps(x))</code></p>
+  </li>
+</ul>
+
+<p>처리 목표</p>
+
+<ul>
+  <li>DB에는 tm_id와 roster 정보가 한 줄에 쌓인다</li>
+  <li>복잡한 json 형식의 roster를 한 줄 한 줄 꺼낸 후</li>
+  <li>해당 tm_id에 연결한다</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'roster_info.txt'</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<span class="c1">#lambda x 처리
+</span><span class="n">df</span><span class="p">[</span><span class="s">'pos1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'pos1'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'pos2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'pos2'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'info'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'teach'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'roster'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">'teachers'</span><span class="p">])</span>
+
+
+<span class="c1">#pos1(bat) 처리
+</span><span class="n">df</span><span class="p">[</span><span class="s">'pos1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'pos1'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">pos1</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'pos1'</span><span class="p">]</span>
+
+<span class="n">pos1_final</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pos1</span><span class="p">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">df_pos1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">df_pos1</span> <span class="o">=</span> <span class="n">df_pos1</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pos1</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+    <span class="n">df_pos1</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">pos1_final</span> <span class="o">=</span> <span class="n">pos1_final</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_pos1</span><span class="p">)</span>
+
+<span class="n">pos1_pivot</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">pos1_final</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="s">'tm_id'</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="s">'pos'</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="s">'pl_id'</span><span class="p">,</span> <span class="n">aggfunc</span> <span class="o">=</span> <span class="s">'sum'</span><span class="p">)</span>
+
+
+
+<span class="c1">#pos2(pit) 처리 
+</span><span class="n">df</span><span class="p">[</span><span class="s">'pos2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'pos2'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">pos2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'pos2'</span><span class="p">]</span>
+
+<span class="n">pos2_final</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pos2</span><span class="p">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">df_pos2</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">df_pos2</span> <span class="o">=</span> <span class="n">df_pos2</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pos2</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+    <span class="n">df_pos2</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">pos2_final</span> <span class="o">=</span> <span class="n">pos2_final</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_pos2</span><span class="p">)</span>
+
+<span class="c1">#pos2는 pos이 동일하게 되어 있어서 인덱스 처리 추가    
+</span><span class="n">pos2_final</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span><span class="p">[</span><span class="s">'pl_id'</span><span class="p">,</span><span class="s">'tm_id'</span><span class="p">]</span>
+<span class="n">pos2_final</span><span class="p">[</span><span class="s">'pos2_order'</span><span class="p">]</span> <span class="o">=</span> <span class="s">'pos2'</span> <span class="o">+</span> <span class="p">(</span><span class="n">pos2_final</span><span class="p">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="n">pos2_pivot</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">pos2_final</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="s">'tm_id'</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="s">'pos2_order'</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="s">'pl_id'</span><span class="p">,</span> <span class="n">aggfunc</span> <span class="o">=</span> <span class="s">'sum'</span><span class="p">)</span>
+
+
+<span class="c1">#일반 정보
+</span><span class="n">df</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'info'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'info'</span><span class="p">]</span>
+
+<span class="n">info_final</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">info</span><span class="p">.</span><span class="n">index</span><span class="p">:</span>
+    <span class="n">df_info</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">df_info</span> <span class="o">=</span> <span class="n">df_info</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">df_info</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">info_final</span> <span class="o">=</span> <span class="n">info_final</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_info</span><span class="p">)</span>
+
+<span class="n">info_final</span><span class="o">=</span><span class="n">info_final</span><span class="p">.</span><span class="n">fillna</span><span class="p">(</span><span class="s">'x'</span><span class="p">).</span><span class="n">set_index</span> <span class="p">(</span><span class="s">'tm_id'</span><span class="p">)</span>
+
+
+<span class="c1"># 코치 정보 - null이 있을 경우엔 버리는 처리 필요
+</span><span class="n">df</span><span class="p">[</span><span class="s">'teach'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'teach'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">df_teach</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="n">teach</span><span class="p">.</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'null'</span><span class="p">)</span><span class="o">==</span><span class="bp">False</span><span class="p">].</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">teach</span> <span class="o">=</span> <span class="n">df_teach</span><span class="p">[</span><span class="s">'teach'</span><span class="p">]</span>
+
+<span class="n">teach_final</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">teach</span><span class="p">.</span><span class="n">index</span> <span class="p">:</span>
+    <span class="n">teach_info</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">teach_info</span> <span class="o">=</span> <span class="n">teach_info</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">loads</span><span class="p">(</span><span class="n">teach</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+    <span class="n">teach_info</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_teach</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">teach_final</span> <span class="o">=</span> <span class="n">teach_final</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">teach_info</span><span class="p">)</span>
+    
+<span class="n">teach_pivot</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">teach_final</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span><span class="s">'tm_id'</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="s">'role'</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s">'pl_id'</span><span class="p">,</span> <span class="n">aggfunc</span> <span class="o">=</span><span class="s">'sum'</span><span class="p">,</span><span class="n">fill_value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">).</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">teach_pivot</span> <span class="o">=</span> <span class="n">teach_pivot</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">'NaN'</span><span class="p">)</span>
+
+<span class="c1">#코치 순서 변경
+</span><span class="n">teach_pivot</span> <span class="o">=</span> <span class="n">teach_pivot</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'HEAD'</span><span class="p">,</span> <span class="s">'P'</span><span class="p">,</span> <span class="s">'B'</span><span class="p">,</span> <span class="s">'H'</span><span class="p">,</span> <span class="s">'R'</span><span class="p">,</span><span class="s">'D'</span><span class="p">])</span>
+
+
+<span class="c1">#한 줄로 붙이기 - 팀id가 공통
+</span><span class="n">data_frames</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos1_pivot</span><span class="p">,</span> <span class="n">pos2_pivot</span><span class="p">,</span> <span class="n">info_final</span><span class="p">,</span> <span class="n">teach_pivot</span><span class="p">]</span>
+<span class="n">df_lineup</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="p">:</span> <span class="n">pd</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span><span class="n">right</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span><span class="p">[</span><span class="s">'tm_id'</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s">'outer'</span><span class="p">),</span> <span class="n">data_frames</span><span class="p">)</span>
+
+<span class="n">df_lineup</span>
+</code></pre></div></div>
+:ET

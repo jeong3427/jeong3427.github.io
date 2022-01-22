@@ -1,0 +1,1096 @@
+I"˘<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">0.</span><span class="n">인덱스</span> <span class="n">이해</span>
+<span class="n">df</span><span class="p">[</span>  <span class="err">◎</span>     <span class="p">:</span>     <span class="err">◎</span>   <span class="p">]</span>  
+     <span class="err">▼</span>           <span class="err">▽</span>
+    <span class="n">여기서부터</span>   <span class="n">얘</span> <span class="n">전까지</span> <span class="p">(</span><span class="n">포함</span> <span class="n">안</span> <span class="n">함</span><span class="p">)</span> 
+    
+<span class="n">인덱스는</span> <span class="n">항상</span> <span class="mi">0</span><span class="n">부터</span> <span class="n">시작</span><span class="err">!</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">friend_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">'student'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Nate'</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s">'teacher'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Jenny'</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="s">'developer'</span><span class="p">]</span>
+<span class="p">]</span>
+ 
+<span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'age'</span><span class="p">,</span><span class="s">'job'</span> <span class="p">]</span>
+ 
+<span class="n">df</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">friend_list</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+      <td>student</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+      <td>developer</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">1.</span> <span class="n">인덱스나</span> <span class="n">컬럼으로</span> <span class="n">원하는</span> <span class="n">데이터만</span> <span class="n">뽑기</span>
+<span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="n">원하는</span> <span class="n">인덱스</span><span class="p">,</span> <span class="n">원하는</span> <span class="n">인덱스</span><span class="p">,</span> <span class="p">...</span> <span class="p">]]</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+      <td>student</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+      <td>developer</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">행</span><span class="p">,</span> <span class="n">열</span> <span class="n">모두</span> <span class="n">인덱스로</span> <span class="n">될</span> <span class="n">경우</span>
+<span class="n">df</span><span class="p">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">행</span> <span class="n">정보</span><span class="p">,</span> <span class="n">열</span> <span class="n">정보</span><span class="p">]</span>
+<span class="n">df</span><span class="p">.</span><span class="n">iolc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="p">:</span> <span class="n">만</span> <span class="n">쓰면</span> <span class="n">전체</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">컬럼명으로</span> <span class="n">원하는</span> <span class="n">데이터만</span> <span class="n">뽑기</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'필요한 헤더'</span><span class="p">,</span> <span class="s">'필요한 헤더2'</span><span class="p">,</span> <span class="p">...]</span>
+<span class="n">이름</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s">'필요한 헤더'</span><span class="p">,</span><span class="s">'필요한 헤더2'</span><span class="p">...])</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s">'name'</span><span class="p">,</span><span class="s">'age'</span><span class="p">]]</span>
+<span class="n">df_filtered</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s">'age'</span><span class="p">,</span><span class="s">'job'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>20</td>
+      <td>student</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>25</td>
+      <td>developer</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.</span> <span class="n">조건문으로</span> <span class="n">원하는</span> <span class="n">데이터만</span> <span class="n">뽑기</span>
+<span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="n">헤더</span> <span class="n">조건</span><span class="p">]</span>
+
+<span class="n">두</span> <span class="n">개</span> <span class="n">이상</span> <span class="n">조건</span> <span class="n">사용하려면</span> <span class="n">df</span><span class="p">[</span> <span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">조건1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">조건2</span><span class="p">)]</span>
+<span class="n">df</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">'조건'</span><span class="p">)</span>
+
+<span class="n">주의</span><span class="p">)</span> <span class="n">조건에서</span> <span class="n">같다는</span> <span class="o">==</span> <span class="n">사용</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">.</span><span class="n">age</span><span class="o">&gt;</span><span class="mi">25</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">'age&gt;25'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">.</span><span class="n">age</span><span class="o">&gt;</span><span class="mi">25</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">name</span><span class="o">==</span><span class="s">'Nate'</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">3.</span> <span class="n">정규</span> <span class="n">표현식을</span> <span class="n">사용하여</span> <span class="n">필터링하기</span> <span class="o">&amp;</span> <span class="n">string일</span> <span class="n">경우</span> <span class="n">contain</span> <span class="n">사용해보기</span>
+<span class="n">컬럼명</span><span class="p">(</span><span class="n">헤더</span><span class="p">)</span><span class="n">에</span> <span class="s">'a'</span> <span class="n">가</span> <span class="n">들어간</span> <span class="n">컬럼만</span> <span class="n">남겨줘</span> <span class="p">(</span><span class="n">like</span><span class="p">)</span>
+<span class="n">이름</span><span class="p">(</span><span class="n">like</span><span class="o">=</span> <span class="s">'a'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">like</span><span class="o">=</span><span class="s">'a'</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#컬럼명에 a 가 들어간 것만 남겨줘
+</span></code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s">'b$'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#컬럼명(헤더) 마지막이 'b' 로 끝나는 컬럼만 남겨줘 (regex)
+</span></code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>student</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>developer</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s">'e$'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#컬럼명(헤더) 마지막이 'e' 로 끝나는 컬럼만 남겨줘 (regex)
+</span></code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'컬럼명'</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'포함시킬 단어'</span><span class="p">)]</span> <span class="c1"># numpy 없이 포함시킬 단어
+</span>
+<span class="n">df_filtered</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'name'</span><span class="p">].</span><span class="nb">str</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">'페레로로쉐'</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">4.</span> <span class="n">행</span><span class="p">,</span> <span class="n">열</span> <span class="n">삭제하기</span>
+<span class="n">행</span> <span class="n">삭제</span> <span class="p">:</span> <span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'행1'</span><span class="p">,</span> <span class="s">'행2'</span><span class="p">],</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">인플레이스는</span> <span class="n">대체한다를</span> <span class="n">의미</span> 
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1">#index 0이랑 2를 drop
+</span><span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df2</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'age'</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df2</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>job</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>student</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>teacher</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>developer</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">5.</span> <span class="n">행</span><span class="p">,</span> <span class="n">열</span> <span class="n">수정</span> <span class="n">및</span> <span class="n">생성하기</span>
+<span class="n">이미</span> <span class="n">만들어진</span> <span class="n">데이터프레임에</span> <span class="n">열</span> <span class="n">하나</span> <span class="n">추가하기</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'열 이름'</span><span class="p">]</span> <span class="o">=</span> <span class="n">값</span>
+<span class="n">일괄적으로</span> <span class="n">들어가게</span> <span class="n">됨</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'salary'</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+      <th>salary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+      <td>student</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+      <td>developer</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">그</span> <span class="n">후</span><span class="p">,</span> <span class="n">numpy를</span> <span class="n">이용해서</span> <span class="n">조건에</span> <span class="n">따라</span> <span class="n">데이터</span> <span class="n">값</span> <span class="n">수정하기</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'수정하려는 값이 들어갈 열 이름'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'조건이 될 열'</span><span class="p">]</span> <span class="err">!</span> <span class="o">=</span> <span class="s">'조건 값'</span><span class="p">,</span> <span class="s">'참일 때 값'</span><span class="p">,</span> <span class="s">'거짓일 때 값'</span><span class="p">)</span>
+<span class="o">!=</span>     <span class="o">-&gt;</span> <span class="o">~</span><span class="n">이</span> <span class="n">아니다</span>
+<span class="o">==</span>    <span class="o">-&gt;</span> <span class="o">~</span><span class="n">이다</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'salary'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'job'</span><span class="p">]</span> <span class="o">!=</span> <span class="s">'student'</span><span class="p">,</span> <span class="s">'yes'</span><span class="p">,</span><span class="s">'no'</span><span class="p">)</span> <span class="c1"># 직업이 학생이 아니면 salary에 yes, 학생이 맞다면 no
+</span><span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+      <th>salary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+      <td>student</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+      <td>developer</td>
+      <td>yes</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'salary'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'job'</span><span class="p">]</span> <span class="o">==</span><span class="s">'student'</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># 직업이 학생이라면 salary에 0 아니면 100
+</span><span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>age</th>
+      <th>job</th>
+      <th>salary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>20</td>
+      <td>student</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>30</td>
+      <td>teacher</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>25</td>
+      <td>developer</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">만들어진</span> <span class="n">데이터</span> <span class="n">값을</span> <span class="n">활용해서</span> <span class="n">새로운</span> <span class="n">열</span> <span class="n">추가하기</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'열 이름'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'열1'</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s">'열2'</span><span class="p">]</span> 
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s">'John'</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Nate'</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span>
+    <span class="p">[</span><span class="s">'Jenny'</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="p">]</span>
+ 
+<span class="n">column_name</span> <span class="o">=</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'midterm'</span><span class="p">,</span><span class="s">'final'</span> <span class="p">]</span>
+ 
+<span class="n">df</span><span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">test_list</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">column_name</span><span class="p">)</span>
+
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'total'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'midterm'</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s">'final'</span><span class="p">]</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+      <th>total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+      <td>180</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+      <td>165</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+      <td>40</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr />
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">6.</span> <span class="n">조건문</span> <span class="n">구문</span> <span class="n">만들기</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">'열 이름'</span><span class="p">]</span> <span class="p">,</span> <span class="k">if</span> <span class="p">,</span> <span class="k">elif</span><span class="p">,</span> <span class="k">else</span> <span class="n">사용</span>
+
+<span class="n">어떤</span> <span class="n">값</span> <span class="o">=</span> <span class="p">[]</span>  <span class="o">---</span> <span class="n">여기선</span> <span class="n">grade라는</span> <span class="n">값</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">'열 이름'</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="n">조건</span> <span class="mi">1</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'나올 값1'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="n">조건2</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'나올 값2'</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'나올 값3'</span><span class="p">)</span>
+
+        
+<span class="n">df</span><span class="p">[</span><span class="s">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">grades</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">[</span><span class="s">'average'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'total'</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+      <th>total</th>
+      <th>average</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+      <td>180</td>
+      <td>90.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+      <td>165</td>
+      <td>82.5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+      <td>40</td>
+      <td>20.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grades</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s">'average'</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">90</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'A'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">80</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'B'</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="n">grades</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'F'</span><span class="p">)</span>
+        
+<span class="n">df</span><span class="p">[</span><span class="s">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">grades</span>
+<span class="n">df</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>midterm</th>
+      <th>final</th>
+      <th>total</th>
+      <th>average</th>
+      <th>grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>John</td>
+      <td>95</td>
+      <td>85</td>
+      <td>180</td>
+      <td>90.0</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Nate</td>
+      <td>85</td>
+      <td>80</td>
+      <td>165</td>
+      <td>82.5</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Jenny</td>
+      <td>30</td>
+      <td>10</td>
+      <td>40</td>
+      <td>20.0</td>
+      <td>F</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+:ET

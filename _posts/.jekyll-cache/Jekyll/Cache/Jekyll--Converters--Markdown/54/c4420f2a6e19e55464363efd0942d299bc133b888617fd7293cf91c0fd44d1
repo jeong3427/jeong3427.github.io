@@ -1,0 +1,40 @@
+I"�<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span><span class="err">데이터</span> <span class="err">꺼내오기</span>
+<span class="o">#</span><span class="err">달러</span> <span class="err">구매일</span> <span class="err">경우</span> <span class="mi">1150</span><span class="err">원</span> <span class="err">곱해서</span> <span class="err">꺼내기</span>
+<span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">가격</span> <span class="o">&lt;</span> <span class="mi">120</span> <span class="k">then</span> <span class="err">가격</span><span class="o">*</span><span class="mi">1150</span> <span class="k">else</span> <span class="err">가격</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">price</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="err">생성일자</span><span class="p">)</span> <span class="k">as</span> <span class="nb">date</span> 
+<span class="k">from</span> <span class="err">구매데이터</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="../../../../img/2022-01-09-year_month/raw_data.png" alt="raw_data" style="zoom: 33%;" /></p>
+
+<hr />
+
+<p>200만 줄이 넘는 데이터</p>
+
+<p>id별 + 연도_월별 합산 후 각 연도별로 파일 저장하기</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="c1">#2013년 예시
+</span><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'purchase.txt'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+<span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df1</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">year</span>
+<span class="n">df1</span><span class="p">[</span><span class="s">'month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">month</span>
+<span class="n">df_2013</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">year</span> <span class="o">==</span><span class="mi">2013</span><span class="p">]</span>
+<span class="n">df_2013_sum</span> <span class="o">=</span> <span class="n">df_2013</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'id'</span><span class="p">,</span> <span class="s">'month'</span><span class="p">]).</span><span class="n">agg</span><span class="p">({</span><span class="s">'price'</span><span class="p">:</span><span class="s">'sum'</span><span class="p">})</span>
+
+
+<span class="c1">#2014년부터 루프 돌리고 각 연도별로 다른 파일로 저장하기
+</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'purchase.txt'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">)</span>
+    <span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+    <span class="n">df1</span><span class="p">[</span><span class="s">'year'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">year</span>
+    <span class="n">df1</span><span class="p">[</span><span class="s">'month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="s">'date'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="n">month</span>
+    <span class="n">df_year</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">year</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2014</span><span class="o">+</span><span class="n">i</span><span class="p">)]</span>
+    <span class="n">df_year_sum</span> <span class="o">=</span> <span class="n">df_year</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'id'</span><span class="p">,</span> <span class="s">'month'</span><span class="p">]).</span><span class="n">agg</span><span class="p">({</span><span class="s">'price'</span><span class="p">:</span><span class="s">'sum'</span><span class="p">})</span>
+    
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df_year_sum</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="mi">2014</span><span class="o">+</span><span class="n">i</span><span class="si">}</span><span class="s">_result.txt'</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="../../../../img/2022-01-09-year_month/result.png" alt="result" /></p>
+:ET

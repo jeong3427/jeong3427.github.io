@@ -1,0 +1,6 @@
+I"<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span><span class="err">데이터</span> <span class="err">꺼내오기</span>
+<span class="o">#</span><span class="err">달러</span> <span class="err">구매일</span> <span class="err">경우</span> <span class="mi">1150</span><span class="err">원</span> <span class="err">곱해서</span> <span class="err">꺼내기</span>
+<span class="k">select</span> <span class="n">id</span><span class="p">,</span> <span class="p">(</span><span class="k">case</span> <span class="k">when</span> <span class="err">가격</span> <span class="o">&lt;</span> <span class="mi">120</span> <span class="k">then</span> <span class="err">가격</span><span class="o">*</span><span class="mi">1150</span> <span class="k">else</span> <span class="err">가격</span> <span class="k">end</span><span class="p">)</span> <span class="k">as</span> <span class="n">price</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="err">생성일자</span><span class="p">)</span> <span class="k">as</span> <span class="nb">date</span> 
+<span class="k">from</span> <span class="err">구매데이터</span><span class="p">;</span>
+</code></pre></div></div>
+:ET
