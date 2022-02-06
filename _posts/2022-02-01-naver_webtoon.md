@@ -96,7 +96,7 @@ with pd.ExcelWriter('naver_webtoon.xlsx') as writer:
 
     #위에서 수동으로 만든 오름차순 세팅 후 요일별, 평점순으로 저장 
     webtoon_list['요일'] = webtoon_list['요일'].astype(day_categorize)
-    webtoon_list = webtoon_list.sort_values(by=['평점','요일'], ascending=[False,True]).reset_index(drop=True)
+    webtoon_list = webtoon_list.sort_values(by=['요일','평점'], ascending=[True,False]).reset_index(drop=True)
 
     for category in webtoon_list.요일:
         webtoon_list[webtoon_list.요일 == f'{category}'].to_excel(writer, sheet_name=f'{category}',index=False)
