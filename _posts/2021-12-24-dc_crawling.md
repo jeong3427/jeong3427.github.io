@@ -22,54 +22,61 @@ tag : [python, 크롤링, 시각화]
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
-import re
 
-url = 'https://gall.dcinside.com/mgallery/board/lists/'  
-#마이너 갤러리
-
-# url = 'https://gall.dcinside.com/board/lists/'  
-# 정식 갤러리
+url = 'https://gall.dcinside.com/mgallery/board/lists/'
 
 list_index = ['제목', '글쓴이', '날짜' ]
 list = []
 
+for num in range(1,5):
 
-for num in range(1,15): #15페이지 크롤링
-    params = {'id':'manager', 'page': f'{num}'}  # id로 갤러리 조절
-    
-    headers = {'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'}
-    
-    resp = requests.get(url, params=params, headers = headers)
-    soup = BeautifulSoup(resp.content, 'html.parser')
-    
-    contents = soup.find('tbody').find_all('tr')
+    try :
+        params = {'id':'9up', 'page': f'{num}'}
+        headers = {'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'}
+        resp = requests.get(url, params=params, headers = headers)
+        soup = BeautifulSoup(resp.content, 'html.parser')
+        contents = soup.find('tbody').find_all('tr')
+        page_size = len(contents)
 
-    for i in contents:
-        line =[]
-        new_dict = {}
-        
-        # 제목
-        title_tag = i.find('a')
-        title = title_tag.text
-        line.append(title)
-        
-        #글쓴이
-        writer_tag = i.find('td', class_ = 'gall_writer ub-writer').find('span', class_ ='nickname')
-        writer = writer_tag.text
-        line.append(writer) 
-    
-        #날짜
-        date_tag = i.find('td', class_ = 'gall_date')
-        date_dict = date_tag.attrs
-        
-        if len(date_dict) == 2:
-            line.append(date_dict['title'])
-        else:
-            line.append(date_tag.text)
-            
+        for i in contents:
+            line =[]
+            try :
+                new_dict = {}
+
+                title_tag = i.find('a')
+                title = title_tag.text
+                line.append(title)
+
+                writer_tag = i.find('td', class_ = 'gall_writer ub-writer').find('span', class_ ='nickname')
+
+                try:
+                    if writer_tag is not None:
+                        writer = writer_tag.text
+                        line.append(writer) 
+
+                    else:
+                            line.append('없음')
+
+                except :
+                        line.append('없음')
+
+                date_tag = i.find('td', class_ = 'gall_date')
+                date_dict = date_tag.attrs
+
+                if len(date_dict) == 2:
+                    line.append(date_dict['title'])
+                else:
+                    line.append(date_tag.text)
                 
-        list.append(line)
+                list.append(line)
             
+            except:
+                continue
+    except:
+        continue
+
+
+    resp.close
 
 df = pd.DataFrame(list, columns =list_index)
 
