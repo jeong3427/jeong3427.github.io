@@ -1,0 +1,86 @@
+I"�!<p>슬랙 퍼블릭 채널에 사람이 몇 명이 있는지</p>
+
+<p>각 인원은 몇 개의 퍼블릭 채널에 있는지 알아보기</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">slack_sdk</span> <span class="kn">import</span> <span class="n">WebClient</span>
+
+
+<span class="c1">#슬랙 인증
+</span><span class="n">slack_token</span> <span class="o">=</span> <span class="s">'토큰 코드'</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">WebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">slack_token</span><span class="p">)</span>
+
+
+<span class="c1">#슬랙 id와 이름으로 구성된 데이터프레임 준비
+</span><span class="n">user_list</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">users_list</span><span class="p">()[</span><span class="s">'members'</span><span class="p">]</span>
+<span class="n">user_info</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">user_list</span> <span class="p">:</span>
+    <span class="n">member_name</span><span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="s">'profile'</span><span class="p">][</span><span class="s">'real_name'</span><span class="p">]</span>
+    <span class="n">member_id</span><span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="s">'id'</span><span class="p">]</span>
+    <span class="n">user_info</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">member_id</span><span class="p">,</span><span class="n">member_name</span><span class="p">))</span>
+
+<span class="n">df_user</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">user_info</span><span class="p">)</span>
+<span class="n">df_user</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'id'</span><span class="p">,</span><span class="s">'name'</span><span class="p">]</span>
+
+
+
+<span class="c1">#채널 정보 탐색
+</span><span class="n">channel_list</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">conversations_list</span><span class="p">(</span><span class="n">types</span><span class="o">=</span><span class="p">(</span><span class="s">"public_channel"</span> <span class="ow">or</span> <span class="s">"mpim"</span> <span class="ow">or</span><span class="s">"im"</span><span class="p">),</span><span class="n">exclude_archived</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1000</span><span class="p">)[</span><span class="s">'channels'</span><span class="p">]</span>
+<span class="n">channel_name</span> <span class="o">=</span> <span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">'name'</span><span class="p">]</span>
+<span class="n">channel_member_count</span> <span class="o">=</span> <span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">'num_members'</span><span class="p">]</span>
+<span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">'id'</span><span class="p">]</span>
+
+<span class="n">channel_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel_list</span><span class="p">)</span>
+
+
+<span class="c1">#채널 리스트, 인원수 출력
+# for i in range(channel_num):
+#     print(f'{i+1}' + ". " +  f"{channel_list[i]['name']}" + " (" + f"{channel_list[i]['num_members']}" + "명)" )
+</span>
+
+
+<span class="c1"># 채널 id 준비
+</span><span class="n">channel_id_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">channel_num</span><span class="p">):</span>
+    <span class="n">channel_id_list</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">'id'</span><span class="p">])</span>
+
+<span class="c1"># print(channel_id_list)
+</span>
+
+<span class="c1"># print(channel_id_list[0])
+# check = client.conversations_members(channel='C04P77BEV')['members']
+</span>
+
+<span class="c1"># 몇 개의 채널에 있는지 알기 위해 멤버 정보를 하나의 리스트에 이어 붙이기
+</span><span class="n">member_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">channel_id_info</span> <span class="ow">in</span> <span class="n">channel_id_list</span><span class="p">:</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">conversations_members</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel_id_info</span><span class="p">)[</span><span class="s">'members'</span><span class="p">]</span>
+    <span class="n">member_list</span> <span class="o">=</span> <span class="n">member_list</span> <span class="o">+</span> <span class="n">members</span>
+    <span class="n">members</span> <span class="o">=</span><span class="p">[]</span>
+
+
+<span class="c1"># df_user 와 이어 붙이기 위해서 컬럼명 id로 설정
+</span><span class="n">df_member</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">member_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'id'</span><span class="p">])</span>
+
+<span class="c1">#처음에 만든 이름 정보와 붙이기
+</span><span class="n">df_member</span> <span class="o">=</span> <span class="n">df_member</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_user</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s">'id'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">'left'</span><span class="p">)</span>
+
+
+<span class="c1">#이름이 몇 개 있는지 카운트
+</span><span class="n">df_result</span> <span class="o">=</span> <span class="n">df_member</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'name'</span><span class="p">]).</span><span class="n">agg</span><span class="p">({</span><span class="s">'id'</span><span class="p">:</span><span class="s">'count'</span><span class="p">}).</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">df_result</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'name'</span><span class="p">,</span><span class="s">'count'</span><span class="p">]</span>
+
+<span class="c1">#개수대로 내림차순
+</span><span class="n">df_result</span> <span class="o">=</span> <span class="n">df_result</span><span class="p">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s">'count'</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">df_result</span><span class="p">)</span>
+</code></pre></div></div>
+
+:ET
