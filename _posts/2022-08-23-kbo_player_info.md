@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "kbo play log"
+title:  "kbo 등록 선수 정보 크롤링"
 categories : Python
 tag : [python, 크롤링, 야구]
 ---
