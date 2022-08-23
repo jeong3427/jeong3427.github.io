@@ -23,7 +23,6 @@ request의 post를 사용하여 크롤링
 
 ```python
 from math import ceil
-from unittest import result
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
