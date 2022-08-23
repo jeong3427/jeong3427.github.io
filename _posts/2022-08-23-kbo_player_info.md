@@ -171,7 +171,7 @@ driver.quit()
 
 텍스트 파일에서 엑셀로 옮기면 다음과 같다
 
-![image-20220823225550205](C:\Users\jeong\AppData\Roaming\Typora\typora-user-images\image-20220823225550205.png)
+![image-20220823225550205](../../../../img/image-20220823225550205.png)
 
 .
 
