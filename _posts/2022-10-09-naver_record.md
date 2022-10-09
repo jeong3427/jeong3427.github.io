@@ -25,7 +25,7 @@ find_all 한 다음 attrs로 가져올지 get으로 가져와야 할지에서 �
 
 .
 
-``` 
+``` python
 from html_table_parser  import parser_functions as parser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
