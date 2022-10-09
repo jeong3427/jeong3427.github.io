@@ -127,7 +127,14 @@ df_pitching['이름'] = df_pitching.이름.str.split('(').str[0]
 df_pitching['record'].fillna("",inplace=True)
 
 
-#4.엑셀에 정리
+#4. 기록 숫자로 변환
+df_batting.iloc[:,3:-1] = df_batting.iloc[:, 3:-1].apply(pd.to_numeric, errors='ignore')
+df_pitching.iloc[:,1:10] = df_pitching.iloc[:,1:10].apply(pd.to_numeric, errors='ignore')
+df_pitching.iloc[:,14:-2] = df_pitching.iloc[:,14:-2].apply(pd.to_numeric, errors='ignore')
+df_defense.iloc[:,2:-1] = df_defense.iloc[:,2:-1].apply(pd.to_numeric, errors='ignore')
+
+
+#5. 엑셀에 정리
 with pd.ExcelWriter(f'{today}'+'.xlsx') as writer:
     df_batting.to_excel(writer, sheet_name='타격', index=False)
     df_pitching.to_excel(writer, sheet_name='피칭', index=False)
