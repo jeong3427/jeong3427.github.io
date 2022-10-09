@@ -133,12 +133,52 @@ df_pitching.iloc[:,1:10] = df_pitching.iloc[:,1:10].apply(pd.to_numeric, errors=
 df_pitching.iloc[:,14:-2] = df_pitching.iloc[:,14:-2].apply(pd.to_numeric, errors='ignore')
 df_defense.iloc[:,2:-1] = df_defense.iloc[:,2:-1].apply(pd.to_numeric, errors='ignore')
 
+#5. 블론 추가
+blown_url= 'http://www.statiz.co.kr/stat.php?mid=stat&re=1&ys='+f'{year}'+'&ye='+f'{year}'+'&se=0&te=&tm=&ty=0&qu=auto&po=0&as=&ae=&hi=&un=&pl=&da=10&o1=BLSV_Plus&o2=WAR&de=1&lr=0&tr=&cv=&ml=2&pa=0&si=&cn=&sn=100'
+
+response = requests.get(blown_url)
+html_text = response.text
+
+blown_soup = bs(html_text, 'lxml')
+
+player_ino_b = blown_soup.find_all('a')
+
+href_list_b = []
+
+for b in player_ino_b:
+    href = b.attrs['href']
+    if (not str(href).endswith('=3')) and (str(href).startswith('player')):
+        href_list_b.append(href)
+        
+birthday_b = [d for d in href_list_b if 'birth' in d]
+
+df_birth_b = pd.DataFrame(birthday_b, columns=['link'])
+df_birth_b['date'] = df_birth_b['link'].apply(lambda x : str(x)[-10:])
+
+df_date = df_birth_b.drop_duplicates(['link','date'], keep='first')
+
+blown_info = blown_soup.find('table', attrs={'id':'mytable'})
+
+b_record_table= parser.make2d(blown_info)
+
+df_blown = pd.DataFrame(b_record_table[2:], columns=b_record_table[0])
+
+pd.set_option('mode.chained_assignment', None)
+df_blown['birth'] = df_date['date']
+
+df_blown = df_blown[['순', '이름','팀','정렬','birth']]
+df_blown['정렬'] = df_blown['정렬'].apply(pd.to_numeric)
+
+df_blown_final = df_blown[df_blown['정렬']>0]
+df_blown_final.columns=['순','이름','팀','BL+','birth']
+
 
 #5. 엑셀에 정리
 with pd.ExcelWriter(f'{today}'+'.xlsx') as writer:
     df_batting.to_excel(writer, sheet_name='타격', index=False)
     df_pitching.to_excel(writer, sheet_name='피칭', index=False)
     df_defense.to_excel(writer, sheet_name='수비', index=False)
+    df_blown_final.to_excel(writer, sheet_name='블론', index=False)
     
 print("완료되었습니다")
 ```
