@@ -208,3 +208,4 @@ plugins:
   - jekyll-spaceship
 
 futrue: ture
+timezone: Asia/Seoul
