@@ -5,7 +5,7 @@ title:  "파이썬 알고리즘 연습 03"
 
 categories : Python
 
-tag : [python, 알고리즘, chatGpt, 최적, 재귀함수]
+tag : [python, 알고리즘, chatGPT, 최적, 재귀함수]
 
 ---
 
