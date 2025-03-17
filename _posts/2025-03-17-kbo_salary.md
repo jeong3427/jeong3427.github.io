@@ -2,7 +2,7 @@
 layout: post
 title:  "kbo 전체 연봉 크롤링"
 categories : Python
-tag : [python, 크롤링, 야구, chatGPT]
+tag : [python, 크롤링, 야구, chatGPT, lambda]
 ---
 
 
