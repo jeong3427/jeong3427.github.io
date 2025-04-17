@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<p>한 번 참여할 수도, 두 번, 세 번 참여할 수도 있는 결과가 round_scores에 남는다</p>
+
+<ul>
+  <li>참여할 때마다 roundNo, winCnt, joinCnt, spareChane 정보가 남는다</li>
+  <li>하나의 json 안에 길이가 다르게 들어간다</li>
+</ul>
+
+<p><img src="../../../../img/2022-02-13-sql_json2/round_scores.png" alt="round_scores"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p><strong>처리 방법</strong></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">carena_id</span><span class="p">,</span> <span class="n">team_id</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[0]."joinCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">join1</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[0]."winCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">wincnt1</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[0]."spareChance"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">spare1</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[1]."joinCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">join2</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[1]."winCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">wincnt2</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[1]."spareChance"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">spare2</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[2]."joinCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">join3</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[2]."winCnt"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">wincnt3</span><span class="p">,</span>
+<span class="n">ifnull</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">round_scores</span><span class="p">,</span> <span class="s1">'$[2]."spareChance"'</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span> <span class="k">as</span> <span class="n">spare3</span>
+<span class="k">from</span> <span class="n">carena_play_rlog</span> <span class="k">limit</span> <span class="mi">10</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="../../../../img/2022-02-13-sql_json2/result.png" alt="result"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<hr>
+
+<p>중간 과정</p>
+
+<ul>
+  <li>json_search로는 검색이 되지 않는다</li>
+</ul>
+
+<p><img src="../../../../img/2022-02-13-sql_json2/image.png" alt="image"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>바로 json_extract를 해도 되지 않고</p>
+
+<p><img src="../../../../img/2022-02-13-sql_json2/image%20(1).png" alt="image (1)"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>$[*].winCnt를 했을 때만 작동</p>
+
+<ul>
+  <li>$[0].winCnt을 할 경우 [] 처리 없이 첫번째 값만 나온다</li>
+</ul>
+
+<p><img src="../../../../img/2022-02-13-sql_json2/image%20(2).png" alt="image (2)"></p>
+</body></html>
