@@ -34,7 +34,10 @@ import requests
 import time
 import re
 
+
 # 경고 off
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 pd.set_option('mode.chained_assignment',  None) 
 
 # Selenium 옵션 설정
@@ -205,10 +208,8 @@ for g in range(game_count):
 
             # NaN이 하나라도 있는 행은 모두 제거
             df_cleaned = df_replaced.dropna().reset_index(drop=True)
-            df_position = df_cleaned.drop(columns=['field_1', 'field_2', 'field_3', 'field_4'], errors='ignore')
-
-            df_position.rename(columns={"field_5": "포지션"}, inplace=True)
-
+            df_position = df_cleaned.drop(columns=['field_2', 'field_3', 'field_4'], errors='ignore')
+            
 
             ##2-2-c. 타자 기록
             tables = naver_soup.find_all('table', class_='PlayerRecord_record_table__19F6_ PlayerRecord_type_batter__1rHnm eg-flick-panel')
@@ -401,7 +402,7 @@ df_pit_final = df_pit_crawl
 
 #타자는 그 날 연장 이닝에 따라 달라짐
 total_columns = df_bat_crawl.shape[1]
-fixed_columns = ['player_id','이름','포지션','타수','득점','안타','타점','홈런','볼넷','삼진','도루','타율']
+fixed_columns = ['player_id','이름','타순','포지션','타수','득점','안타','타점','홈런','볼넷','삼진','도루','타율']
 numbered_columns = [str(i+1) for i in range(total_columns - len(fixed_columns))]
 df_bat_crawl.columns = fixed_columns + numbered_columns
 
@@ -415,9 +416,11 @@ for col in float_columns:
     df_bat_crawl[col] = df_bat_crawl[col].astype(float)
 
 ##3-2. 한 이닝 두 타석 처리
-#player_id ~~ 타율까지 타자 12개행
-df_bat_info = df_bat_crawl.iloc[:,0:12]
-df_bat_check = df_bat_crawl.iloc[:,12:]
+#player_id ~~ 타율까지 타자 13개행
+start_idx = len(fixed_columns)
+
+df_bat_info = df_bat_crawl.iloc[:,0:start_idx]
+df_bat_check = df_bat_crawl.iloc[:,start_idx:]
 
 df_second_check = pd.DataFrame()
 
@@ -439,9 +442,12 @@ df_bat_final = pd.concat([df_bat_info, df_second_check],axis=1)
 
 ##3-3. 기타 항목 정리
 df_etc_crawl['정리'] = df_etc_crawl['이름'].str.replace(r'\(.*?\)', '',regex=True)
-df_etc_crawl['정리2'] = df_etc_crawl['정리'].str.replace(r'\d.*?호', '',regex=True)
+contents_data = df_etc_crawl['정리'].str.split(',',expand=True)
+contents_data = contents_data.applymap(
+    lambda x: re.sub(r'\d.*?호', '', x) if isinstance(x, str) else x
+)
 contetns_name = df_etc_crawl['항목']
-contents_data = df_etc_crawl['정리2'].str.split(',',expand=True)
+
 df_etc_contents = pd.concat([contetns_name,contents_data],axis=1)
 df_etc_contents = df_etc_contents.set_index('항목')
 
