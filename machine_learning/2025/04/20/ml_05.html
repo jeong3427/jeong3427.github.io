@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<!-- <html lang="en"> --><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KLDKHLH');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta> --><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>혼자 공부하는 머신러닝 05 | hjim 코드 저장소</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="혼자 공부하는 머신러닝 05">
+<meta name="author" content="jeong3427">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="1. 결정트리">
+<meta property="og:description" content="1. 결정트리">
+<link rel="canonical" href="https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/20/ml_05.html">
+<meta property="og:url" content="https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/20/ml_05.html">
+<meta property="og:site_name" content="hjim 코드 저장소">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-04-20T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="혼자 공부하는 머신러닝 05">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"jeong3427"},"dateModified":"2025-04-20T00:00:00+09:00","datePublished":"2025-04-20T00:00:00+09:00","description":"1. 결정트리","headline":"혼자 공부하는 머신러닝 05","mainEntityOfPage":{"@type":"WebPage","@id":"https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/20/ml_05.html"},"url":"https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/20/ml_05.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://jeong3427.github.io//jekyll-theme-yat/feed.xml" title="hjim 코드 저장소">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="hjim 코드 저장소" src="" onerror="this.style.display='none'">
+  hjim 코드 저장소
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">혼자 공부하는 머신러닝 05</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2025-04-20T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Apr 20, 2025
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#python">#python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#ml">#ml</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D">#머신러닝</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#sklearn">#sklearn</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EC%82%AC%EC%9D%B4%ED%82%B7%EB%9F%B0">#사이킷런</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EA%B2%B0%EC%A0%95%ED%8A%B8%EB%A6%AC">#결정트리</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EA%B7%B8%EB%A6%AC%EB%93%9C%EC%84%9C%EC%B9%98">#그리드서치</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EA%B5%90%EC%B0%A8%EA%B2%80%EC%A6%9D">#교차검증</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h3 id="1-결정트리">1. 결정트리</h3>
+
+<p>레드 와인, 화이트 와인 표시가 누락된 상태에서</p>
+
+<p>캔에 적힌 알코올 도수, 당도, pH값으로 구별하는 방법</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 로지스틱 회귀로 분류
+</span><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">wine</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">https://bit.ly/wine-date</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">wine</span><span class="p">.</span><span class="nf">info</span><span class="p">()</span>
+
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">'</span><span class="nc">pandas</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">DataFrame</span><span class="sh">'</span><span class="s">&gt;
+RangeIndex: 6497 entries, 0 to 6496
+Data columns (total 4 columns):
+ #   Column   Non-Null Count  Dtype  
+---  ------   --------------  -----  
+ 0   alcohol  6497 non-null   float64
+ 1   sugar    6497 non-null   float64
+ 2   pH       6497 non-null   float64
+ 3   class    6497 non-null   float64
+dtypes: float64(4)
+
+### class가 0이면 레드 와인, 1이면 화이트 와인
+
+data = wine.iloc[:,:-1].to_numpy()
+target= wine[</span><span class="sh">'</span><span class="n">class</span><span class="sh">'</span><span class="s">].to_numpy()
+
+from sklearn.model_selection import train_test_split
+
+train_input, test_input, train_target, test_target = train_test_split(
+    data, target, test_size=0.2, random_state=42
+)
+
+print(train_input.shape, test_input.shape) #(5197, 3) (1300, 3)
+
+from sklearn.preprocessing import StandardScaler
+
+ss = StandardScaler()
+ss.fit(train_input)
+
+train_scaled = ss.transform(train_input)
+test_scaled = ss.transform(test_input)
+
+from sklearn.linear_model import LogisticRegression
+
+lr = LogisticRegression()
+lr.fit(train_scaled, train_target)
+print(lr.score(train_scaled, train_target)) #0.7808350971714451
+print(lr.score(test_scaled, test_target)) #0.7776923076923077
+
+
+print(lr.coef_, lr.intercept_) #[[ 0.51268071  1.67335441 -0.68775646]] [1.81773456] 데이터는 알콜, 설탕, pH
+print(lr.classes_) #[0. 1.] 0이면 레드 와인, 1이면 화이트 와인
+
+</span></code></pre></div></div>
+
+<p>로지스틱 분류 결과로 볼 때 알콜 도수, 당도가 높으면 화이트 와인일 확률이 높고 pH가 높을 수록 레드 와인이 될 확률이 높음</p>
+
+<p>하지만 설명하기가 어려움 coef_, intercept 결과가 직관적이지 않음</p>
+
+<p>다항 특성을 추가하면 더 설명하기 어려움</p>
+
+<p>이런 문제를 해결하기 위한 결정 트리</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">dt</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span> <span class="n">train_target</span><span class="p">))</span> <span class="c1">#0.996921300750433
+</span><span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">test_scaled</span><span class="p">,</span> <span class="n">test_target</span><span class="p">))</span> <span class="c1">#0.8592307692307692
+</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">sklearn.tree</span> <span class="kn">import</span> <span class="n">plot_tree</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="nf">plot_tree</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="../../../../images/2025-04-20-ml_05/tree1.png" alt="tree1"></p>
+
+<p>max_depth를 설정하지 않을 경우 끝까지 감</p>
+
+<p><img src="../../../../images/2025-04-20-ml_05/KakaoTalk_20250420_190831213_01.jpg" alt="KakaoTalk_20250420_190831213_01"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
+<span class="nf">plot_tree</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">alcohol</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sugar</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">pH</span><span class="sh">'</span><span class="p">])</span>
+<span class="c1">##filled = True를 하면 양성 클래스를 파랑색으로 칠해줌
+</span><span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="../../../../images/2025-04-20-ml_05/tree2.png" alt="tree2"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 가지치기
+</span><span class="n">dt</span> <span class="o">=</span> <span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">dt</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+<span class="nf">plot_tree</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">filled</span> <span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">alcohol</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sugar</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">pH</span><span class="sh">'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="c1">#색이 진할수록 양성 클래스가 모여있음
+</span></code></pre></div></div>
+
+<p><img src="../../../../images/2025-04-20-ml_05/tree3.png" alt="tree3"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#스케일 조정을 하지 않고 사용 -&gt; 특성값이 원본 데이터 값으로 나와서 이해하기 쉬움
+</span><span class="n">dt</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+<span class="nf">plot_tree</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">filled</span> <span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">alcohol</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sugar</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">pH</span><span class="sh">'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+<span class="c1">## sugar가 1.625보다 크고 alcohol은 11.025보다 작거나 같으면 레드와인 (레드 와인이 음성 클래스)
+</span></code></pre></div></div>
+
+<p><img src="../../../../images/2025-04-20-ml_05/tree4.png" alt="tree4"></p>
+
+<p><img src="../../../../images/2025-04-20-ml_05/KakaoTalk_20250420_190659536.png" alt="KakaoTalk_20250420_190659536"></p>
+
+<p><img src="../../../../images/2025-04-20-ml_05/KakaoTalk_20250420_190305494.png" alt="KakaoTalk_20250420_190305494"></p>
+
+<p><img src="../../../../images/2025-04-20-ml_05/KakaoTalk_20250420_190831213_02.jpg" alt="KakaoTalk_20250420_190831213_02"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<h3 id="2-교차-검증">2. 교차 검증</h3>
+
+<p>지금까지 훈련 세트에서 모델을 훈련하고 테스트 세트에서 모델을 평가해왔음.</p>
+
+<p>테스트 세트에서 얻은 점수를 토대로 실전에 투입 시 이 정도 성능을 기대할 수 있다고 가늠.</p>
+
+<p>하지만 테스트 세트를 사용해 성능을 확인하다 보면 점점 테스트 세트에 맞추게 되는 셈.</p>
+
+<p>테스트 세트로 일반화 성능을 올바르게 예측하려면, 가능한 한 테스트 세트를 사용하면 안됨.</p>
+
+<p>테스트 세트를 사용하지 않고 모델이 과대적합인지 과소적합인지 판단하기 위한 간단한 방법은 훈련 세트를 다시 나누는 것.</p>
+
+<p>이것을 검증 세트라고 부름.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### 검증 세트
+</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">wine</span> <span class="o">=</span><span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">https://bit.ly/wine-date</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">data</span><span class="o">=</span><span class="n">wine</span><span class="p">[[</span><span class="sh">'</span><span class="s">alcohol</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sugar</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">pH</span><span class="sh">'</span><span class="p">]].</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">wine</span><span class="p">[</span><span class="sh">'</span><span class="s">class</span><span class="sh">'</span><span class="p">].</span><span class="nf">to_numpy</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">train_input</span><span class="p">,</span> <span class="n">test_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">,</span> <span class="n">test_target</span> <span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">sub_input</span><span class="p">,</span> <span class="n">val_input</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">,</span> <span class="n">val_target</span><span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span>
+    <span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">sub_input</span><span class="p">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">val_input</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1">#(4157, 3) (1040, 3)
+</span></code></pre></div></div>
+
+<p>처음 훈련 세트는 5,197개였는데 sub_input을 보면 4,157개로 줄었고 1,040개의 검증 세트가 추가됨.</p>
+
+<p>이렇게 만들어진 sub_input, sub_target, val_input, val_target으로 모델을 만들고 평가.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">dt</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">sub_input</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">sub_input</span><span class="p">,</span> <span class="n">sub_target</span><span class="p">))</span> <span class="c1">#훈련세트 0.9971133028626413
+</span><span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">val_input</span><span class="p">,</span> <span class="n">val_target</span><span class="p">))</span> <span class="c1">#검증세트 0.864423076923077
+</span>
+<span class="c1">### 과대적합 -&gt; 매개변수를 바꿔서 더 좋은 모델을 찾아야 함
+</span></code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 교차 검증
+</span>
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_validate</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="nf">cross_validate</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+
+<span class="p">{</span><span class="sh">'</span><span class="s">fit_time</span><span class="sh">'</span><span class="p">:</span> <span class="nf">array</span><span class="p">([</span><span class="mf">0.00384617</span><span class="p">,</span> <span class="mf">0.004076</span>  <span class="p">,</span> <span class="mf">0.00372863</span><span class="p">,</span> <span class="mf">0.00412512</span><span class="p">,</span> <span class="mf">0.00351977</span><span class="p">]),</span> <span class="sh">'</span><span class="s">score_time</span><span class="sh">'</span><span class="p">:</span> <span class="nf">array</span><span class="p">([</span><span class="mf">0.0004847</span> <span class="p">,</span> <span class="mf">0.000494</span>  <span class="p">,</span> <span class="mf">0.00043845</span><span class="p">,</span> <span class="mf">0.00048184</span><span class="p">,</span> <span class="mf">0.00041032</span><span class="p">]),</span> <span class="sh">'</span><span class="s">test_score</span><span class="sh">'</span><span class="p">:</span> <span class="nf">array</span><span class="p">([</span><span class="mf">0.86923077</span><span class="p">,</span> <span class="mf">0.84615385</span><span class="p">,</span> <span class="mf">0.87680462</span><span class="p">,</span> <span class="mf">0.84889317</span><span class="p">,</span> <span class="mf">0.83541867</span><span class="p">])}</span>
+
+
+<span class="c1">#교차 검증의 최종 점수는 test_score 키에 담긴 5개 점수의 평균
+</span><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="sh">'</span><span class="s">test_score</span><span class="sh">'</span><span class="p">]))</span> <span class="c1">#0.855300214703487
+</span></code></pre></div></div>
+
+<p><img src="../../../../images/2025-04-20-ml_05/KakaoTalk_20250420_195404598.jpg" alt="KakaoTalk_20250420_195404598"></p>
+
+<p>보통 5-폴드 교차 검증이나 10-폴드 교차 검증을 많이 사용.</p>
+
+<p>train_test_split() 함수로 전체 데이터를 섞은 후 훈련 세트를 준비했기 때문에 따로 섞을 필요는 없음.</p>
+
+<p>혹시 교차 검증을 할 때 훈련 세트를 섞으려면 분할기를 지정.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#회귀 모델일 경우 KFold 분할기 사용, 분륨 모델일 경우 StratifiedKFold 사용
+</span><span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedKFold</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="nf">cross_validate</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="nc">StratifiedKFold</span><span class="p">())</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="sh">'</span><span class="s">test_score</span><span class="sh">'</span><span class="p">]))</span> <span class="c1">#0.855300214703487
+</span>
+
+<span class="c1">## 10폴드 교차 검증
+</span><span class="n">splitter</span> <span class="o">=</span> <span class="nc">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">scores</span><span class="o">=</span> <span class="nf">cross_validate</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">splitter</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="sh">'</span><span class="s">test_score</span><span class="sh">'</span><span class="p">]))</span> <span class="c1">#0.8574181117533719
+</span></code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<h3 id="3-하이퍼파라미터-튜닝---그리드-서치">3. 하이퍼파라미터 튜닝 - 그리드 서치</h3>
+
+<p>모델이 학습할 수 없어서 사용자가 지정해야만 하는 파라미터 : 하이퍼파라미터</p>
+
+<p>라이브러리의 기본값으로 훈련 후 검증 세트 점수를 보면서 매개변수 조금씩 바꾸기</p>
+
+<p>max_depth 최적값과 min_samples_split 매개변수는 같이 움직이므로, 두 매개변수를 동시에 바꿔가며 최적의 값을 찾아야 함.</p>
+
+<p>사이킷런에서는 그리드 서치 클래스가 해줌.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="sh">'</span><span class="s">min_impurity_decrease</span><span class="sh">'</span><span class="p">:[</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.0002</span><span class="p">,</span> <span class="mf">0.0003</span><span class="p">,</span> <span class="mf">0.0004</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">]}</span>
+
+<span class="n">gs</span> <span class="o">=</span> <span class="nc">GridSearchCV</span><span class="p">(</span><span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span> <span class="n">params</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> 
+<span class="c1">#n_jobs : 병렬 실행에 사용할 CPU 코어 수. 기본값1, -1은 모든 코어 사용
+</span>
+<span class="n">gs</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="c1">## 최적의 하이퍼파라미터를 찾으면 자동으로 훈련 세트 만들어줌
+</span><span class="n">dt</span> <span class="o">=</span> <span class="n">gs</span><span class="p">.</span><span class="n">best_estimator_</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">))</span> <span class="c1">#0.9615162593804117
+</span><span class="nf">print</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">best_params_</span><span class="p">)</span> <span class="c1">#뭐가 제일 좋았는지도 확인 가능
+#{'min_impurity_decrease': 0.0001}
+</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="sh">'</span><span class="s">mean_test_score</span><span class="sh">'</span><span class="p">])</span>
+<span class="c1">#[0.86819297 0.86453617 0.86492226 0.86780891 0.86761605]
+</span></code></pre></div></div>
+
+<p>넘파이 argmax() 함수를 사용하면 가장 큰 값의 인덱스 확인 가능</p>
+
+<p>params 키에 저장된 매개변수 중 최상의 검증 점수를 만든 매개변수 조합 확인 가능</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">best_index</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">argmax</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="sh">'</span><span class="s">mean_test_score</span><span class="sh">'</span><span class="p">])</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="sh">'</span><span class="s">params</span><span class="sh">'</span><span class="p">][</span><span class="n">best_index</span><span class="p">])</span>
+<span class="c1">#{'min_impurity_decrease': 0.0001}
+</span></code></pre></div></div>
+
+<p>.</p>
+
+<p>훈련 세트 조합보다 더 복잡한 매개변수 조합 확인해보기</p>
+
+<p>결정 트리에서 min_impurity_decrease는 노드를 분할하기 위한 불순도 감소 최소량을 지정.</p>
+
+<p>여기에 max_depth로 트리 깊이를 제한하고 min_samples_split으로 노드를 나누기 위한 최소 샘플 수도 지정.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">params</span> <span class="o">=</span><span class="p">{</span>
+    <span class="sh">'</span><span class="s">min_impurity_decrease</span><span class="sh">'</span> <span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">),</span> <span class="c1">#0.0001에서 0.001이 될 때까지 0.0001씩 더하는 range
+</span>    <span class="sh">'</span><span class="s">max_depth</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="c1">#5에서 20까지 1씩 증가하는 15개 
+</span>    <span class="sh">'</span><span class="s">min_samples_split</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">#2에서 100까지 10씩 더해가며 10개의 값
+</span><span class="p">}</span>
+
+<span class="c1">## 9 x 15 x 10 = 1,350개의 교차 검증 횟수
+</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="nc">GridSearchCV</span><span class="p">(</span><span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span> <span class="n">params</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">gs</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">best_params_</span><span class="p">)</span>
+<span class="p">{</span><span class="sh">'</span><span class="s">max_depth</span><span class="sh">'</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="sh">'</span><span class="s">min_impurity_decrease</span><span class="sh">'</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">float64</span><span class="p">(</span><span class="mf">0.0004</span><span class="p">),</span> <span class="sh">'</span><span class="s">min_samples_split</span><span class="sh">'</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="sh">'</span><span class="s">mean_test_score</span><span class="sh">'</span><span class="p">]))</span>
+<span class="c1">#0.8683865773302731
+</span></code></pre></div></div>
+
+<p>min_impurity_decrease, max_depth 등 매개변수 간격을 임의로 정했는데 더 좋은 방법이 있다.</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<h3 id="4-랜덤-서치">4. 랜덤 서치</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">scipy.stats</span> <span class="kn">import</span> <span class="n">uniform</span><span class="p">,</span> <span class="n">randint</span>
+
+<span class="c1"># uniform은 정해진 범위에서 실수 값을 고르게 뽑음
+# randint는 정수
+</span>
+<span class="n">params</span> <span class="o">=</span><span class="p">{</span>
+    <span class="sh">'</span><span class="s">min_impurity_decrease</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">uniform</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">),</span>
+    <span class="sh">'</span><span class="s">max_depth</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">randint</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">50</span><span class="p">),</span>
+    <span class="sh">'</span><span class="s">min_samples_split</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">25</span><span class="p">),</span>
+    <span class="sh">'</span><span class="s">min_samples_leaf</span><span class="sh">'</span> <span class="p">:</span> <span class="nf">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">RandomizedSearchCV</span>
+
+<span class="n">gs</span> <span class="o">=</span> <span class="nc">RandomizedSearchCV</span><span class="p">(</span><span class="nc">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span> 
+                       <span class="n">params</span><span class="p">,</span>
+                       <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                       <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">gs</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">best_params_</span><span class="p">)</span>
+<span class="p">{</span><span class="sh">'</span><span class="s">max_depth</span><span class="sh">'</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span> <span class="sh">'</span><span class="s">min_impurity_decrease</span><span class="sh">'</span><span class="p">:</span> <span class="n">np</span><span class="p">.</span><span class="nf">float64</span><span class="p">(</span><span class="mf">0.00034102546602601173</span><span class="p">),</span> <span class="sh">'</span><span class="s">min_samples_leaf</span><span class="sh">'</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="sh">'</span><span class="s">min_samples_split</span><span class="sh">'</span><span class="p">:</span> <span class="mi">13</span><span class="p">}</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="n">gs</span><span class="p">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="sh">'</span><span class="s">mean_test_score</span><span class="sh">'</span><span class="p">]))</span>
+<span class="c1">#0.8695428296438884
+</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">gs</span><span class="p">.</span><span class="n">best_estimator_</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">test_input</span><span class="p">,</span> <span class="n">test_target</span><span class="p">))</span>
+<span class="c1">#0.86
+</span></code></pre></div></div>
+
+<p>테스트 세트 점수는 검증 세트 점수보다 조금 작은 것이 일반적.</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/machine_learning/2025/04/17/ml_04.html" title="혼자 공부하는 머신러닝 04">혼자 공부하는 머신러닝 04</a><a class="next" href="/jekyll-theme-yat/machine_learning/2025/04/27/ml_06.html" title="혼자 공부하는 머신러닝 06">혼자 공부하는 머신러닝 06</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/python/2022/10/23/naver_webtoon2.html" title="혼자 공부하는 머신러닝 06">네이버 웹툰 종합 크롤링</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2024/02/19/text_counts.html" title="혼자 공부하는 머신러닝 06">데이터프레임 컬럼 내 텍스트 출현 빈도</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2022/06/21/google_review.html" title="혼자 공부하는 머신러닝 06">구글 플레이 리뷰 크롤링</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/tableau/2022/01/16/tb-year.html" title="혼자 공부하는 머신러닝 06">태블로 이전 해 대비 월별 매출</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2025 jeong3427</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

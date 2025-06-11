@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<!-- <html lang="en"> --><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KLDKHLH');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta> --><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>혼자 공부하는 머신러닝 03 | hjim 코드 저장소</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="혼자 공부하는 머신러닝 03">
+<meta name="author" content="jeong3427">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="7개 종류의 생선을 랜덤하게 럭키백에 넣고">
+<meta property="og:description" content="7개 종류의 생선을 랜덤하게 럭키백에 넣고">
+<link rel="canonical" href="https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html">
+<meta property="og:url" content="https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html">
+<meta property="og:site_name" content="hjim 코드 저장소">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2025-04-16T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="혼자 공부하는 머신러닝 03">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"jeong3427"},"dateModified":"2025-04-16T00:00:00+09:00","datePublished":"2025-04-16T00:00:00+09:00","description":"7개 종류의 생선을 랜덤하게 럭키백에 넣고","headline":"혼자 공부하는 머신러닝 03","mainEntityOfPage":{"@type":"WebPage","@id":"https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html"},"url":"https://jeong3427.github.io//jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://jeong3427.github.io//jekyll-theme-yat/feed.xml" title="hjim 코드 저장소">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="hjim 코드 저장소" src="" onerror="this.style.display='none'">
+  hjim 코드 저장소
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">혼자 공부하는 머신러닝 03</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2025-04-16T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Apr 16, 2025
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#python">#python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#ml">#ml</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D">#머신러닝</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#sklearn">#sklearn</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%ED%9A%8C%EA%B7%80">#회귀</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EC%82%AC%EC%9D%B4%ED%82%B7%EB%9F%B0">#사이킷런</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EB%84%98%ED%8C%8C%EC%9D%B4">#넘파이</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#numpy">#numpy</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EB%A1%9C%EC%A7%80%EC%8A%A4%ED%8B%B1">#로지스틱</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>7개 종류의 생선을 랜덤하게 럭키백에 넣고</p>
+
+<p>길이, 대각선, 높이, 두께, 무게 5개의 특성을 통해서 이 생선이 7개의 종류 중 어떤 것일지 확률을 구하기</p>
+
+<h3 id="1-데이터-세팅">1. 데이터 세팅</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">fish</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">read_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">https://bit.ly/fish_csv</span><span class="sh">'</span><span class="p">)</span>
+
+<span class="n">pd</span><span class="p">.</span><span class="nf">unique</span><span class="p">(</span><span class="n">fish</span><span class="p">[</span><span class="sh">'</span><span class="s">Species</span><span class="sh">'</span><span class="p">])</span>
+<span class="c1">##array(['Bream', 'Roach', 'Whitefish', 'Parkki', 'Perch', 'Pike', 'Smelt'],dtype=object)
+</span>
+
+<span class="n">fish_input</span> <span class="o">=</span> <span class="n">fish</span><span class="p">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:].</span><span class="nf">to_numpy</span><span class="p">()</span>
+<span class="n">fish_target</span> <span class="o">=</span> <span class="n">fish</span><span class="p">[</span><span class="sh">'</span><span class="s">Species</span><span class="sh">'</span><span class="p">].</span><span class="nf">to_numpy</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">train_input</span><span class="p">,</span> <span class="n">test_input</span><span class="p">,</span> <span class="n">train_target</span><span class="p">,</span> <span class="n">test_target</span> <span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span>
+    <span class="n">fish_input</span><span class="p">,</span> <span class="n">fish_target</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="n">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">ss</span> <span class="o">=</span> <span class="nc">StandardScaler</span><span class="p">()</span>
+<span class="n">ss</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_input</span><span class="p">)</span>
+<span class="n">train_scaled</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">transform</span><span class="p">(</span><span class="n">train_input</span><span class="p">)</span>
+<span class="n">test_scaled</span> <span class="o">=</span> <span class="n">ss</span><span class="p">.</span><span class="nf">transform</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<h3 id="2-로지스틱-이진-분류">2. 로지스틱 이진 분류</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">##데이터 세트 중에 도미, 빙어만 쓰기 위해 정리
+## Bream = 도미, Smelt = 빙어
+</span><span class="n">bream_smelt_indexes</span> <span class="o">=</span> <span class="p">(</span><span class="n">train_target</span><span class="o">==</span><span class="sh">'</span><span class="s">Bream</span><span class="sh">'</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">train_target</span><span class="o">==</span><span class="sh">'</span><span class="s">Smelt</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">train_bream_smelt</span> <span class="o">=</span> <span class="n">train_scaled</span><span class="p">[</span><span class="n">bream_smelt_indexes</span><span class="p">]</span>
+<span class="n">target_bream_smelt</span> <span class="o">=</span> <span class="n">train_target</span><span class="p">[</span><span class="n">bream_smelt_indexes</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="n">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="nc">LogisticRegression</span><span class="p">()</span>
+<span class="n">lr</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_bream_smelt</span><span class="p">,</span> <span class="n">target_bream_smelt</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="nf">predict</span><span class="p">(</span><span class="n">train_bream_smelt</span><span class="p">[:</span><span class="mi">5</span><span class="p">]))</span>
+<span class="c1">## ['Bream' 'Smelt' 'Bream' 'Bream' 'Bream']
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="n">classes_</span><span class="p">)</span> 
+<span class="c1">## array(['Bream', 'Smelt'], dtype=object)
+### Smelt 가 1로 양성 클래스
+</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="nf">predict_proba</span><span class="p">(</span><span class="n">train_bream_smelt</span><span class="p">[:</span><span class="mi">5</span><span class="p">]))</span>
+<span class="c1">### 첫번째가 음성 클래스(0) 에 대한 확률, 두번째 열이 양성 클래스(1)에 대한 확률
+## 무엇이 음성이고 양성인지는 lr.classes_ 로 확인
+</span><span class="p">[[</span><span class="mf">0.99759855</span> <span class="mf">0.00240145</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.02735183</span> <span class="mf">0.97264817</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.99486072</span> <span class="mf">0.00513928</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.98584202</span> <span class="mf">0.01415798</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.99767269</span> <span class="mf">0.00232731</span><span class="p">]]</span>
+
+<span class="c1">## 첫번째 데이터 도미일 확률 99퍼, 빙어일 확률 0.2퍼
+</span>
+
+<span class="n">decisions</span> <span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="nf">decision_function</span><span class="p">(</span><span class="n">train_bream_smelt</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+
+
+<span class="c1">## 시그모이드 함수로 확률 값 얻기
+</span><span class="kn">from</span> <span class="n">scipy.special</span> <span class="kn">import</span> <span class="n">expit</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">expit</span><span class="p">(</span><span class="n">decisions</span><span class="p">))</span> <span class="c1">## [0.00240145 0.97264817 0.00513928 0.01415798 0.00232731]
+</span>
+<span class="c1">### (lr.predict_proba(train_bream_smelt[:5])) 로 했을 때 두번째 열의 값, 양성 클래스에 대한 확률과 동일
+### decision_function 매서드는 양성 클래스에 대한 z 값을 반환
+</span><span class="p">[</span><span class="mf">0.00240145</span> <span class="mf">0.97264817</span> <span class="mf">0.00513928</span> <span class="mf">0.01415798</span> <span class="mf">0.00232731</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<h3 id="3-로지스틱-다중-분류">3. 로지스틱 다중 분류</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="nc">LogisticRegression</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">lr</span><span class="p">.</span><span class="nf">fit</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span> <span class="n">train_target</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">train_scaled</span><span class="p">,</span> <span class="n">train_target</span><span class="p">))</span> <span class="c1">## 0.9327731092436975
+</span><span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="nf">score</span><span class="p">(</span><span class="n">test_scaled</span><span class="p">,</span> <span class="n">test_target</span><span class="p">))</span> <span class="c1">## 0.925
+</span>
+<span class="c1">## 과소적합이나 과대적합이 보이지 않음
+</span></code></pre></div></div>
+
+<p>로지스틱에서 반복횟수는 기본적으로 100.</p>
+
+<p>숫자가 적어서 1000으로 늘려서 세팅</p>
+
+<p>규제는 L2 Norm을 사용하는 규제를 자동으로 적용.</p>
+
+<p>규제의 강도를 조절하는 게 C 값. 기본값은 1.</p>
+
+<p>C값이 올라가면 규제가 약해지고, 낮아지면 규제가 강해짐.</p>
+
+<p>선형회귀의 alpha와 반대로 작용.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">lr</span><span class="p">.</span><span class="nf">predict</span><span class="p">(</span><span class="n">test_scaled</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="c1"># array(['Perch', 'Smelt', 'Pike', 'Roach', 'Perch'], dtype=object)
+</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="n">proba</span><span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="nf">predict_proba</span><span class="p">(</span><span class="n">test_scaled</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="n">proba</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="p">[[</span><span class="mf">0.</span>    <span class="mf">0.014</span> <span class="mf">0.841</span> <span class="mf">0.</span>    <span class="mf">0.136</span> <span class="mf">0.007</span> <span class="mf">0.003</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.003</span> <span class="mf">0.044</span> <span class="mf">0.</span>    <span class="mf">0.007</span> <span class="mf">0.946</span> <span class="mf">0.</span>   <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.</span>    <span class="mf">0.034</span> <span class="mf">0.935</span> <span class="mf">0.015</span> <span class="mf">0.016</span> <span class="mf">0.</span>   <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.011</span> <span class="mf">0.034</span> <span class="mf">0.306</span> <span class="mf">0.007</span> <span class="mf">0.567</span> <span class="mf">0.</span>    <span class="mf">0.076</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.</span>    <span class="mf">0.904</span> <span class="mf">0.002</span> <span class="mf">0.089</span> <span class="mf">0.002</span> <span class="mf">0.001</span><span class="p">]]</span>
+
+
+<span class="nf">print</span><span class="p">(</span><span class="n">lr</span><span class="p">.</span><span class="n">classes_</span><span class="p">)</span>
+<span class="c1"># array(['Bream', 'Parkki', 'Perch', 'Pike', 'Roach', 'Smelt', 'Whitefish'],dtype=object)
+</span>
+<span class="n">decision</span> <span class="o">=</span> <span class="n">lr</span><span class="p">.</span><span class="nf">decision_function</span><span class="p">(</span><span class="n">test_scaled</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="p">[[</span> <span class="o">-</span><span class="mf">6.5</span>    <span class="mf">1.03</span>   <span class="mf">5.16</span>  <span class="o">-</span><span class="mf">2.73</span>   <span class="mf">3.34</span>   <span class="mf">0.33</span>  <span class="o">-</span><span class="mf">0.63</span><span class="p">]</span>
+ <span class="p">[</span><span class="o">-</span><span class="mf">10.86</span>   <span class="mf">1.93</span>   <span class="mf">4.77</span>  <span class="o">-</span><span class="mf">2.4</span>    <span class="mf">2.98</span>   <span class="mf">7.84</span>  <span class="o">-</span><span class="mf">4.26</span><span class="p">]</span>
+ <span class="p">[</span> <span class="o">-</span><span class="mf">4.34</span>  <span class="o">-</span><span class="mf">6.23</span>   <span class="mf">3.17</span>   <span class="mf">6.49</span>   <span class="mf">2.36</span>   <span class="mf">2.42</span>  <span class="o">-</span><span class="mf">3.87</span><span class="p">]</span>
+ <span class="p">[</span> <span class="o">-</span><span class="mf">0.68</span>   <span class="mf">0.45</span>   <span class="mf">2.65</span>  <span class="o">-</span><span class="mf">1.19</span>   <span class="mf">3.26</span>  <span class="o">-</span><span class="mf">5.75</span>   <span class="mf">1.26</span><span class="p">]</span>
+ <span class="p">[</span> <span class="o">-</span><span class="mf">6.4</span>   <span class="o">-</span><span class="mf">1.99</span>   <span class="mf">5.82</span>  <span class="o">-</span><span class="mf">0.11</span>   <span class="mf">3.5</span>   <span class="o">-</span><span class="mf">0.11</span>  <span class="o">-</span><span class="mf">0.71</span><span class="p">]]</span>
+
+
+<span class="c1">### 다항일 때는 시그모이드 대신 소프트맥스 함수 사용
+</span>
+<span class="kn">from</span> <span class="n">scipy.special</span> <span class="kn">import</span> <span class="n">softmax</span>
+
+<span class="n">proba</span> <span class="o">=</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">decision</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="n">proba</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="p">[[</span><span class="mf">0.</span>    <span class="mf">0.014</span> <span class="mf">0.841</span> <span class="mf">0.</span>    <span class="mf">0.136</span> <span class="mf">0.007</span> <span class="mf">0.003</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.003</span> <span class="mf">0.044</span> <span class="mf">0.</span>    <span class="mf">0.007</span> <span class="mf">0.946</span> <span class="mf">0.</span>   <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.</span>    <span class="mf">0.034</span> <span class="mf">0.935</span> <span class="mf">0.015</span> <span class="mf">0.016</span> <span class="mf">0.</span>   <span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.011</span> <span class="mf">0.034</span> <span class="mf">0.306</span> <span class="mf">0.007</span> <span class="mf">0.567</span> <span class="mf">0.</span>    <span class="mf">0.076</span><span class="p">]</span>
+ <span class="p">[</span><span class="mf">0.</span>    <span class="mf">0.</span>    <span class="mf">0.904</span> <span class="mf">0.002</span> <span class="mf">0.089</span> <span class="mf">0.002</span> <span class="mf">0.001</span><span class="p">]]</span>
+</code></pre></div></div>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/machine_learning/2025/04/15/ml_02.html" title="혼자 공부하는 머신러닝 02">혼자 공부하는 머신러닝 02</a><a class="next" href="/jekyll-theme-yat/machine_learning/2025/04/17/ml_04.html" title="혼자 공부하는 머신러닝 04">혼자 공부하는 머신러닝 04</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/python/2022/10/23/naver_webtoon2.html" title="혼자 공부하는 머신러닝 04">네이버 웹툰 종합 크롤링</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2022/03/27/pandas-melt.html" title="혼자 공부하는 머신러닝 04">pandas melt 함수 - 가로 세로 데이터 바꾸기</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2024/03/29/naver_wpa.html" title="혼자 공부하는 머신러닝 04">네이버 야구 중계 wpa 크롤링</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2025/03/17/kbo_salary.html" title="혼자 공부하는 머신러닝 04">kbo 전체 연봉 크롤링</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2025 jeong3427</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

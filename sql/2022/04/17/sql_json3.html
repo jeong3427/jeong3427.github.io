@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body>
+<p>.</p>
+
+<p><img src="../../../../img/2022-04-17-sql_json3/table-16501650681642.png" alt="table"></p>
+
+<p>slots에 다음과 같이 10개의 동일한 key를 가진 json</p>
+
+<p>[{“slotNo”:1,”playerId”:695020,”priority”:3,”growthGrade”:3},{“slotNo”:2,”playerId”:618019,”priority”:5,”growthGrade”:2},{“slotNo”:3,”playerId”:683012,”priority”:4,”growthGrade”:2},{“slotNo”:4,”playerId”:620023,”priority”:10,”growthGrade”:1},{“slotNo”:5,”playerId”:684014,”priority”:7,”growthGrade”:2},{“slotNo”:6,”playerId”:697004,”priority”:9,”growthGrade”:2},{“slotNo”:7,”playerId”:687020,”priority”:2,”growthGrade”:3},{“slotNo”:8,”playerId”:682005,”priority”:6,”growthGrade”:2},{“slotNo”:9,”playerId”:601015,”priority”:1,”growthGrade”:3},{“slotNo”:10,”playerId”:691024,”priority”:8,”growthGrade”:2}]</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>picked_slot_no에 따라 slots를 파싱하고 싶을 때 사용하는 쿼리</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="n">rising_recruit_team_log_id</span><span class="p">,</span>
+<span class="n">order_no</span><span class="p">,</span><span class="n">team_id</span><span class="p">,</span>
+<span class="n">json_extract</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">slots</span><span class="p">,</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'$['</span><span class="p">,</span> <span class="n">picked_slot_no</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">']'</span><span class="p">)),</span> <span class="s1">'$.playerId'</span><span class="p">)</span> <span class="k">as</span> <span class="n">player_id</span><span class="p">,</span>
+<span class="n">json_extract</span><span class="p">(</span><span class="n">json_extract</span><span class="p">(</span><span class="n">slots</span><span class="p">,</span> <span class="n">concat</span><span class="p">(</span><span class="s1">'$ ['</span><span class="p">,</span> <span class="n">picked_slot_no</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">']'</span><span class="p">)),</span> <span class="s1">'$.growthGrade'</span><span class="p">)</span> <span class="k">as</span> <span class="n">growth_grade</span>
+<span class="k">from</span> <span class="n">rising_recruit_team_log</span> <span class="k">where</span> <span class="n">log_type</span><span class="o">=</span><span class="s1">'S'</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>결과</p>
+
+<p><img src="../../../../img/2022-04-17-sql_json3/result.png" alt="result"></p>
+
+<p>concat 함수로 ‘$[’ , picked_slot_no -1, ‘]’ 로 slots의 몇 번째를 파싱해올지 결정</p>
+
+<p>그 후 key 값을 지정하여 다시 파싱하는 json_extract를 사용</p>
+
+<p>picked_slot_no는 1~10까지고</p>
+
+<p>json 위치는 0~9까지라서 -1 사용</p>
+</body></html>

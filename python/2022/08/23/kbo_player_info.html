@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<!-- <html lang="en"> --><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KLDKHLH');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta> --><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>kbo 등록 선수 정보 크롤링 | hjim 코드 저장소</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="kbo 등록 선수 정보 크롤링">
+<meta name="author" content="jeong3427">
+<meta property="og:locale" content="en_US">
+<meta name="description" content=".">
+<meta property="og:description" content=".">
+<link rel="canonical" href="https://jeong3427.github.io//jekyll-theme-yat/python/2022/08/23/kbo_player_info.html">
+<meta property="og:url" content="https://jeong3427.github.io//jekyll-theme-yat/python/2022/08/23/kbo_player_info.html">
+<meta property="og:site_name" content="hjim 코드 저장소">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2022-08-23T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="kbo 등록 선수 정보 크롤링">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"jeong3427"},"dateModified":"2022-08-23T00:00:00+09:00","datePublished":"2022-08-23T00:00:00+09:00","description":".","headline":"kbo 등록 선수 정보 크롤링","mainEntityOfPage":{"@type":"WebPage","@id":"https://jeong3427.github.io//jekyll-theme-yat/python/2022/08/23/kbo_player_info.html"},"url":"https://jeong3427.github.io//jekyll-theme-yat/python/2022/08/23/kbo_player_info.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://jeong3427.github.io//jekyll-theme-yat/feed.xml" title="hjim 코드 저장소">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="hjim 코드 저장소" src="" onerror="this.style.display='none'">
+  hjim 코드 저장소
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">kbo 등록 선수 정보 크롤링</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-08-23T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Aug 23, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#python">#python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%ED%81%AC%EB%A1%A4%EB%A7%81">#크롤링</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%EC%95%BC%EA%B5%AC">#야구</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>.</p>
+
+<p>.</p>
+
+<p>동적 페이지 크롤링</p>
+
+<p>kbo홈페이지의 선수 정보는 .aspx로 구성되어서 url 이 변경되지 않는다</p>
+
+<p>request의 post를 사용하여 크롤링</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="n">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="n">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="n">selenium.webdriver.support.select</span> <span class="kn">import</span> <span class="n">Select</span>
+<span class="kn">from</span> <span class="n">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="n">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+
+<span class="kn">import</span> <span class="n">collections</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="nf">hasattr</span><span class="p">(</span><span class="n">collections</span><span class="p">,</span><span class="sh">'</span><span class="s">Callable</span><span class="sh">'</span><span class="p">):</span>
+    <span class="n">collections</span><span class="p">.</span><span class="n">Callable</span> <span class="o">=</span> <span class="n">collections</span><span class="p">.</span><span class="n">abc</span><span class="p">.</span><span class="n">Callable</span>
+    
+<span class="kn">import</span> <span class="n">re</span>
+<span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">requests</span>
+<span class="kn">from</span> <span class="n">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="sh">'</span><span class="s">https://www.koreabaseball.com/Player/Search.aspx</span><span class="sh">'</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="p">.</span><span class="nc">Chrome</span><span class="p">()</span>
+<span class="n">driver</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="n">wait</span> <span class="o">=</span> <span class="nc">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">team_code</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">OB</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">LT</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">SS</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">WO</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">HH</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">HT</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">KT</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">LG</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">NC</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">SK</span><span class="sh">'</span><span class="p">]</span>
+
+<span class="c1">#최종 정보가 들어갈 리스트
+</span><span class="n">player_total</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1">#팀별로 총 선수가 몇인지 세는 함수 정의
+</span><span class="k">def</span> <span class="nf">player_count</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nc">Session</span><span class="p">()</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">page_source</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="nc">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="sh">'</span><span class="s">lxml</span><span class="sh">'</span><span class="p">)</span>
+    
+    <span class="n">VIEWSTATE</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__VIEWSTATE</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">VIEWSTATEGENERATOR</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__VIEWSTATEGENERATOR</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">EVENTVALIDATION</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__EVENTVALIDATION</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sh">'</span><span class="s">__VIEWSTATE</span><span class="sh">'</span> <span class="p">:</span> <span class="n">VIEWSTATE</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">__VIEWSTATEGENERATOR</span><span class="sh">'</span> <span class="p">:</span> <span class="n">VIEWSTATEGENERATOR</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">__EVENTVALIDATION</span><span class="sh">'</span> <span class="p">:</span> <span class="n">EVENTVALIDATION</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">ctl00$ctl00$ctl00$cphContents$cphContents$cphContents$ddlTeam</span><span class="sh">'</span> <span class="p">:</span> <span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">team_code</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="si">}</span><span class="sh">'</span>    
+    <span class="p">}</span>
+
+    <span class="n">result_html</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">result_soup</span> <span class="o">=</span> <span class="nc">BeautifulSoup</span><span class="p">(</span><span class="n">result_html</span><span class="p">.</span><span class="n">content</span><span class="p">,</span> <span class="sh">'</span><span class="s">lxml</span><span class="sh">'</span><span class="p">)</span>
+    
+    <span class="n">total_count</span> <span class="o">=</span> <span class="n">result_soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">span</span><span class="sh">'</span><span class="p">,</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">class</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">point</span><span class="sh">'</span><span class="p">}).</span><span class="nf">get_text</span><span class="p">()</span>
+    
+    <span class="k">return</span> <span class="n">total_count</span>
+
+<span class="c1">#선수 정보 크롤링 하는 함수 정의
+</span><span class="k">def</span> <span class="nf">player_crawl</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+    <span class="n">rs</span><span class="o">=</span><span class="n">requests</span><span class="p">.</span><span class="nc">Session</span><span class="p">()</span>
+    
+    <span class="c1">#강제로 쉬는 시간 없으면 이전 페이지가 불러와지는 경우 있어서 추가
+</span>    <span class="n">time</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">html</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">page_source</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="nc">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="sh">'</span><span class="s">lxml</span><span class="sh">'</span><span class="p">)</span>    
+    
+    <span class="n">VIEWSTATE</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__VIEWSTATE</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">VIEWSTATEGENERATOR</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__VIEWSTATEGENERATOR</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">EVENTVALIDATION</span> <span class="o">=</span> <span class="n">soup</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="sh">'</span><span class="s">input</span><span class="sh">'</span><span class="p">,{</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">__EVENTVALIDATION</span><span class="sh">'</span><span class="p">})[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sh">'</span><span class="s">__VIEWSTATE</span><span class="sh">'</span> <span class="p">:</span> <span class="n">VIEWSTATE</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">__VIEWSTATEGENERATOR</span><span class="sh">'</span> <span class="p">:</span> <span class="n">VIEWSTATEGENERATOR</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">__EVENTVALIDATION</span><span class="sh">'</span> <span class="p">:</span> <span class="n">EVENTVALIDATION</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">ctl00$ctl00$ctl00$cphContents$cphContents$cphContents$ddlTeam</span><span class="sh">'</span> <span class="p">:</span> <span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">team_code</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="si">}</span><span class="sh">'</span>    
+    <span class="p">}</span>
+    
+    <span class="n">result_html</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">result_soup</span> <span class="o">=</span> <span class="nc">BeautifulSoup</span><span class="p">(</span><span class="n">result_html</span><span class="p">.</span><span class="n">content</span><span class="p">,</span> <span class="sh">'</span><span class="s">lxml</span><span class="sh">'</span><span class="p">)</span>
+    
+    <span class="n">player_info_list</span> <span class="o">=</span><span class="p">[]</span>
+    
+    <span class="n">player_info</span> <span class="o">=</span> <span class="n">result_soup</span><span class="p">.</span><span class="nf">find_all</span><span class="p">(</span><span class="sh">'</span><span class="s">td</span><span class="sh">'</span><span class="p">)</span>
+    <span class="n">people_count</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">player_info</span><span class="p">)</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">people_count</span><span class="p">):</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="mi">7</span>
+        <span class="n">player_id</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="sa">r</span><span class="sh">'</span><span class="s">[^0-9]</span><span class="sh">'</span><span class="p">,</span><span class="sh">''</span><span class="p">,</span><span class="nf">str</span><span class="p">(</span><span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span> <span class="c1">#표에는 안 보이지만 player_id도 가져오기
+</span>        <span class="n">back_no</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_name</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_team</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">2</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_pos</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">3</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_birth</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">4</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_physical</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">5</span><span class="p">].</span><span class="n">text</span>
+        <span class="n">player_school</span> <span class="o">=</span> <span class="n">player_info</span><span class="p">[</span><span class="n">count</span><span class="o">+</span><span class="mi">6</span><span class="p">].</span><span class="n">text</span>
+        
+        <span class="n">player_info_list</span><span class="p">.</span><span class="nf">append</span><span class="p">(([</span><span class="n">player_id</span><span class="p">,</span> <span class="n">back_no</span><span class="p">,</span> <span class="n">player_name</span><span class="p">,</span> <span class="n">player_team</span><span class="p">,</span>
+                                  <span class="n">player_pos</span><span class="p">,</span> <span class="n">player_birth</span><span class="p">,</span> <span class="n">player_physical</span><span class="p">,</span> <span class="n">player_school</span><span class="p">]))</span>
+    
+    <span class="c1">#print(player_info_list)
+</span>    <span class="k">return</span> <span class="n">player_info_list</span>
+
+
+<span class="c1"># 10개 팀이 있으니 10번 반복
+</span><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">select_team</span> <span class="o">=</span> <span class="nc">Select</span><span class="p">(</span><span class="n">driver</span><span class="p">.</span><span class="nf">find_element</span><span class="p">(</span><span class="n">By</span><span class="p">.</span><span class="n">ID</span><span class="p">,</span><span class="sh">'</span><span class="s">cphContents_cphContents_cphContents_ddlTeam</span><span class="sh">'</span><span class="p">))</span>
+    <span class="n">select_team</span><span class="p">.</span><span class="nf">select_by_value</span><span class="p">(</span><span class="n">team_code</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+    
+    <span class="n">total_count</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">player_count</span><span class="p">(</span><span class="n">driver</span><span class="p">))</span>
+    
+    <span class="n">page_num</span> <span class="o">=</span> <span class="nf">ceil</span><span class="p">(</span><span class="n">total_count</span><span class="o">/</span><span class="mi">20</span><span class="p">)</span>
+    
+    <span class="n">result1</span> <span class="o">=</span> <span class="nf">player_crawl</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+    <span class="n">player_total</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="n">result1</span><span class="p">)</span>
+    
+    <span class="n">page</span><span class="o">=</span><span class="mi">1</span>
+    
+    <span class="k">while</span> <span class="n">page</span><span class="o">&lt;=</span><span class="n">page_num</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">page_button</span> <span class="o">=</span> <span class="n">wait</span><span class="p">.</span><span class="nf">until</span><span class="p">(</span><span class="n">EC</span><span class="p">.</span><span class="nf">element_to_be_clickable</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">By</span><span class="p">.</span><span class="n">XPATH</span><span class="p">,</span><span class="sh">'</span><span class="s">//*[@id=</span><span class="sh">"</span><span class="s">cphContents_cphContents_cphContents_ucPager_btnNo</span><span class="sh">'</span><span class="o">+</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">page</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="sh">'</span><span class="o">+</span><span class="sh">'"</span><span class="s">]</span><span class="sh">'</span><span class="p">)))</span>
+            <span class="n">page_button</span><span class="p">.</span><span class="nf">click</span><span class="p">()</span>
+            
+            <span class="n">page</span><span class="o">+=</span><span class="mi">1</span>
+            
+            <span class="n">result2</span> <span class="o">=</span> <span class="nf">player_crawl</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">result1</span> <span class="o">!=</span> <span class="n">result2</span><span class="p">:</span>
+                <span class="n">player_total</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="n">result2</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nf">len</span><span class="p">(</span><span class="n">result2</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">20</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">page</span><span class="o">==</span><span class="n">page</span>
+                    
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">break</span>
+        
+<span class="n">player_final</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">player_total</span><span class="p">)</span>
+
+<span class="n">player_final</span><span class="p">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="sh">'</span><span class="s">player_id</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">등번호</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">선수명</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">팀명</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">포지션</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">생년월일</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">체격</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">출신교</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">player_final</span><span class="p">.</span><span class="nf">to_csv</span><span class="p">(</span><span class="sh">'</span><span class="s">kbo_result.txt</span><span class="sh">'</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">driver</span><span class="p">.</span><span class="nf">quit</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>텍스트 파일에서 엑셀로 옮기면 다음과 같다</p>
+
+<p><img src="../../../../images/2022-08-23-kbo_player_info/image-20220823230705268.png" alt="image-20220823230705268"></p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>22년 8월23일 현재 872명 크롤링</p>
+
+<p>.</p>
+
+<p>.</p>
+
+<p>계속 1페이지만 긁어와지는 삽질 여러 번 끝에 time.sleep() 추가하여 해결</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/python/2022/07/29/flex_vacation.html" title="연차인 사람 슬랙 알림 봇">연차인 사람 슬랙 알림 봇</a><a class="next" href="/jekyll-theme-yat/python/2022/10/03/statiz_boxscore.html" title="스탯티즈 박스스코어 크롤링">스탯티즈 박스스코어 크롤링</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html" title="스탯티즈 박스스코어 크롤링">혼자 공부하는 머신러닝 03</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2022/05/29/rank_group.html" title="스탯티즈 박스스코어 크롤링">pandas 순위 구하기, 시간별 그룹 구하기</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2022/02/06/naver-stock.html" title="스탯티즈 박스스코어 크롤링">슬랙 주가봇에 국내 주식 추가하기</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2023/03/26/python_algorithm_02.html" title="스탯티즈 박스스코어 크롤링">파이썬 알고리즘 연습 02</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2025 jeong3427</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<!-- <html lang="en"> --><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KLDKHLH');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta> --><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Elasticsearch 데이터 추출 및 전처리 | hjim 코드 저장소</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Elasticsearch 데이터 추출 및 전처리">
+<meta name="author" content="jeong3427">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="엘라스틱서치 접속 후 데이터 가져오기">
+<meta property="og:description" content="엘라스틱서치 접속 후 데이터 가져오기">
+<link rel="canonical" href="https://jeong3427.github.io//jekyll-theme-yat/python/2024/10/30/es_02.html">
+<meta property="og:url" content="https://jeong3427.github.io//jekyll-theme-yat/python/2024/10/30/es_02.html">
+<meta property="og:site_name" content="hjim 코드 저장소">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2024-10-30T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Elasticsearch 데이터 추출 및 전처리">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"jeong3427"},"dateModified":"2024-10-30T00:00:00+09:00","datePublished":"2024-10-30T00:00:00+09:00","description":"엘라스틱서치 접속 후 데이터 가져오기","headline":"Elasticsearch 데이터 추출 및 전처리","mainEntityOfPage":{"@type":"WebPage","@id":"https://jeong3427.github.io//jekyll-theme-yat/python/2024/10/30/es_02.html"},"url":"https://jeong3427.github.io//jekyll-theme-yat/python/2024/10/30/es_02.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://jeong3427.github.io//jekyll-theme-yat/feed.xml" title="hjim 코드 저장소">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="hjim 코드 저장소" src="" onerror="this.style.display='none'">
+  hjim 코드 저장소
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Elasticsearch 데이터 추출 및 전처리</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2024-10-30T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Oct 30, 2024
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 25 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#python">#python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#elasticsearch">#elasticsearch</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#json">#json</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#lambda">#lambda</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>엘라스틱서치 접속 후 데이터 가져오기</p>
+
+<p>그 후 데이터 전처리 작업 정리</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">###시작 시간 입력
+</span><span class="kn">from</span> <span class="n">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="nf">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="nf">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">re</span>
+<span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">time</span>
+<span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
+
+<span class="kn">import</span> <span class="n">functools</span> <span class="k">as</span> <span class="n">f</span>
+<span class="kn">from</span> <span class="n">operator</span> <span class="kn">import</span> <span class="n">add</span>
+
+
+
+<span class="n">ES_DB_COLUMNS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">### "필드 이름" : "어쩌고"
+</span>    <span class="sh">"</span><span class="s">@timestamp</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">timestamp_kst</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">aaa</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">a</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">bb</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">b</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">ccc</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">c</span><span class="sh">"</span>
+<span class="p">}</span>
+
+<span class="n">ES_SEARCH_SIZE</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">ES_HOST</span> <span class="o">=</span> <span class="sh">'</span><span class="s">http://123.456.789:0000</span><span class="sh">'</span> <span class="c1">#형태 = 주소:포트
+</span><span class="n">ES_CONFIG</span> <span class="o">=</span> <span class="p">{</span><span class="sh">'</span><span class="s">id</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">id1234</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">pwd</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">pw1234</span><span class="sh">'</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">get_es</span><span class="p">(</span><span class="n">es_host</span><span class="o">=</span><span class="n">ES_HOST</span><span class="p">,</span> <span class="n">es_config</span><span class="o">=</span><span class="n">ES_CONFIG</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">es</span> <span class="o">=</span> <span class="nc">Elasticsearch</span><span class="p">(</span><span class="n">es_host</span><span class="p">,</span> <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="n">es_config</span><span class="p">[</span><span class="sh">'</span><span class="s">id</span><span class="sh">'</span><span class="p">],</span> <span class="n">es_config</span><span class="p">[</span><span class="sh">'</span><span class="s">pwd</span><span class="sh">'</span><span class="p">]))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="nc">Exception</span><span class="p">(</span><span class="sh">'</span><span class="s">ES Connection failed</span><span class="sh">'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">es</span>
+    
+<span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">es</span><span class="p">:</span> <span class="n">Elasticsearch</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_includes</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">es</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">ES_SEARCH_SIZE</span><span class="p">,</span> <span class="n">_source</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">_source_includes</span><span class="o">=</span><span class="n">source_includes</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="nc">Exception</span><span class="p">(</span><span class="sh">'</span><span class="s">Failed to get response</span><span class="sh">'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="sh">'</span><span class="s">hits</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">hits</span><span class="sh">'</span><span class="p">]</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">__flatten_meta</span><span class="p">(</span><span class="n">sp_meta</span><span class="p">):</span>
+    <span class="c1"># extract information to classify category of logs and flatten informations.
+</span>    <span class="n">sp_result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># get values 
+</span>    <span class="n">sp_meta_value</span> <span class="o">=</span> <span class="n">sp_meta</span><span class="p">[</span><span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">]</span> <span class="c1"># 
+</span>    
+    <span class="c1"># extract level one information
+</span>    <span class="k">for</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">b</span><span class="sh">'</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="n">sp_meta_value</span><span class="p">.</span><span class="nf">keys</span><span class="p">():</span>
+            <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_meta_value</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="c1">#
+</span>        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+            
+    <span class="c1"># extract level two information            
+</span>    <span class="k">for</span> <span class="n">sp_key</span><span class="p">,</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="p">[(</span><span class="sh">'</span><span class="s">c</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">d</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">e</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">f</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">g</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">h</span><span class="sh">'</span><span class="p">)]:</span>
+        <span class="k">if</span> <span class="n">sp_key</span> <span class="ow">in</span> <span class="n">sp_meta_value</span><span class="p">.</span><span class="nf">keys</span><span class="p">()</span> <span class="p">:</span> 
+            <span class="k">if</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="n">sp_meta_value</span><span class="p">[</span><span class="n">sp_key</span><span class="p">].</span><span class="nf">keys</span><span class="p">():</span>
+                <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_meta_value</span><span class="p">[</span><span class="n">sp_key</span><span class="p">][</span><span class="n">sp_val</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_val</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>                 
+            
+    <span class="c1"># extract level two information            
+</span>    <span class="k">for</span> <span class="n">sp_key</span><span class="p">,</span> <span class="n">sp_sub_key</span><span class="p">,</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="p">[(</span><span class="sh">'</span><span class="s">c</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">d</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">e</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">f</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">g</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">h</span><span class="sh">'</span><span class="p">)]:</span>
+        <span class="k">if</span> <span class="n">sp_key</span> <span class="ow">in</span> <span class="n">sp_meta_value</span><span class="p">.</span><span class="nf">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sp_sub_key</span> <span class="ow">in</span> <span class="n">sp_meta_value</span><span class="p">[</span><span class="n">sp_key</span><span class="p">].</span><span class="nf">keys</span><span class="p">():</span>
+                <span class="n">sp_sub_value</span> <span class="o">=</span> <span class="n">sp_meta_value</span><span class="p">[</span><span class="n">sp_key</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="n">sp_sub_value</span><span class="p">[</span><span class="n">sp_sub_key</span><span class="p">].</span><span class="nf">keys</span><span class="p">():</span>
+                    <span class="n">sp_result</span><span class="p">[</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">sp_sub_key</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">sp_val</span><span class="si">}</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_sub_value</span><span class="p">[</span><span class="n">sp_sub_key</span><span class="p">][</span><span class="n">sp_val</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sp_result</span><span class="p">[</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">sp_sub_key</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">sp_val</span><span class="si">}</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>     
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sp_result</span><span class="p">[</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">sp_sub_key</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">sp_val</span><span class="si">}</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sp_result</span><span class="p">[</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">sp_sub_key</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">sp_val</span><span class="si">}</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>
+                    
+    <span class="c1"># rename fields 
+</span>    <span class="k">for</span> <span class="n">sp_prev</span><span class="p">,</span> <span class="n">sp_revi</span> <span class="ow">in</span> <span class="p">[(</span><span class="sh">'</span><span class="s">c</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">d</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">e</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">f</span><span class="sh">'</span><span class="p">),</span> <span class="p">(</span><span class="sh">'</span><span class="s">g</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">h</span><span class="sh">'</span><span class="p">)]:</span>
+        <span class="k">if</span> <span class="n">sp_prev</span> <span class="ow">in</span> <span class="n">sp_result</span><span class="p">.</span><span class="nf">keys</span><span class="p">():</span>
+            <span class="n">sp_prev_data</span> <span class="o">=</span> <span class="n">sp_result</span><span class="p">.</span><span class="nf">pop</span><span class="p">(</span><span class="n">sp_prev</span><span class="p">)</span>
+            <span class="n">sp_result</span><span class="p">[</span><span class="n">sp_revi</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_prev_data</span>
+    <span class="k">return</span> <span class="n">sp_result</span> 
+        
+
+        
+<span class="k">def</span> <span class="nf">__flatten_dict</span><span class="p">(</span><span class="n">sp_dict</span><span class="p">):</span>
+    <span class="c1"># flatten dictionary data (extract target files within level 3)
+</span>    
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>     
+    <span class="k">for</span> <span class="n">sp_key</span><span class="p">,</span> <span class="n">sp_val</span> <span class="ow">in</span> <span class="n">sp_dict</span><span class="p">.</span><span class="nf">items</span><span class="p">():</span>
+        <span class="c1"># preprocess string type dictionary
+</span>        <span class="k">if</span> <span class="n">sp_key</span> <span class="o">==</span> <span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">:</span>
+            <span class="n">sp_val</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="sa">r</span><span class="sh">'</span><span class="s">\bnull\b</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">None</span><span class="sh">'</span><span class="p">,</span> <span class="n">sp_val</span><span class="p">)</span>
+            <span class="n">sp_val</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="n">sp_val</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">sp_val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sp_key</span> <span class="o">==</span> <span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span> <span class="p">:</span> 
+                <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span>
+                
+            <span class="k">elif</span> <span class="n">sp_key</span> <span class="o">==</span> <span class="sh">'</span><span class="s">dist</span><span class="sh">'</span> <span class="p">:</span>
+                <span class="c1"># extract two level informations
+</span>                <span class="k">for</span> <span class="n">sub_key</span><span class="p">,</span> <span class="n">sub_val</span> <span class="ow">in</span> <span class="n">sp_val</span><span class="p">.</span><span class="nf">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">sub_key</span> <span class="o">==</span> <span class="sh">'</span><span class="s">context</span><span class="sh">'</span><span class="p">:</span> 
+                        <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">][</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">sub_key</span> <span class="o">==</span> <span class="sh">'</span><span class="s">value</span><span class="sh">'</span><span class="p">:</span>
+                        <span class="c1"># there is no model information in some action logs 
+</span>                        <span class="k">if</span> <span class="sh">'</span><span class="s">pipeline</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]:</span>
+                            <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">][</span><span class="sh">'</span><span class="s">pipeline</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>                             
+                            <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+                            
+                        <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">][</span><span class="sh">'</span><span class="s">inference</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span>
+                        <span class="n">result</span><span class="p">[</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">][</span><span class="sh">'</span><span class="s">데이터</span><span class="sh">'</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span><span class="p">[</span><span class="n">sub_key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">sp_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_val</span>
+                            
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">__response2df</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
+    <span class="c1"># transform respons into dataframe
+</span>            
+    <span class="c1"># flat response data (extract deep lv fiels into level 1)
+</span>    <span class="n">flat_resp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sp_idx</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
+        <span class="n">flat_resp</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="nf">__flatten_dict</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="sh">'</span><span class="s">_source</span><span class="sh">'</span><span class="p">]))</span>
+    <span class="c1"># warp as single dataframe             
+</span>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">([</span><span class="nf">dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flat_resp</span><span class="p">])</span>
+    <span class="c1"># timestamp UTC -&gt; KST         
+</span>    <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">@timestamp</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">@timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">@timestamp</span><span class="sh">'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">Timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span> 
+    
+    <span class="c1"># dictionary -&gt; json string (+ remove emoji)
+</span>    <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="nf">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="sh">'</span><span class="s">aaa</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="p">.</span><span class="nf">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="c1"># handle emtpy fields
+</span>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">fillna</span><span class="p">(</span><span class="sh">''</span><span class="p">)</span>
+                        
+    <span class="k">return</span> <span class="n">df</span><span class="p">.</span><span class="nf">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">ES_DB_COLUMNS</span><span class="p">)</span> 
+
+<span class="k">def</span> <span class="nf">__user_action_logs_to_df</span><span class="p">(</span><span class="n">logs</span><span class="p">):</span>
+    <span class="n">df_log</span> <span class="o">=</span> <span class="nf">__response2df</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">df_log</span><span class="p">.</span><span class="n">empty</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">([])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">df_log</span>
+    
+    
+<span class="k">def</span> <span class="nf">__timerange2gtelte</span><span class="p">(</span><span class="n">time_range</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
+    <span class="c1"># transform datetime into gte / lte w DSL format         
+</span>    <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1">#gte = datetime.strftime(time_range[0], "%Y-%m-%dT%H:%M:%S.%fZ")
+</span>        <span class="n">gte</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="nf">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">timezone</span><span class="p">),</span> <span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># input is string
+</span>        <span class="c1">#gte = datetime.strftime(datetime.strptime(time_range[0], "%Y-%m-%d %H:%M:%S"), "%Y-%m-%dT%H:%M:%S.%fZ")
+</span>        <span class="n">gte</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="sh">"</span><span class="s">%Y-%m-%d %H:%M:%S</span><span class="sh">"</span><span class="p">)</span><span class="o">-</span><span class="nf">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">timezone</span><span class="p">),</span> <span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nf">isinstance</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1">#lte = datetime.strftime(time_range[1], "%Y-%m-%dT%H:%M:%S.%fZ")
+</span>        <span class="n">lte</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="nf">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">timezone</span><span class="p">),</span> <span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#lte = datetime.strftime(datetime.strptime(time_range[1], "%Y-%m-%d %H:%M:%S"), "%Y-%m-%dT%H:%M:%S.%fZ")
+</span>        <span class="n">lte</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="p">.</span><span class="nf">strptime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sh">"</span><span class="s">%Y-%m-%d %H:%M:%S</span><span class="sh">"</span><span class="p">)</span><span class="o">-</span><span class="nf">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">timezone</span><span class="p">),</span> <span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span>
+
+
+
+<span class="k">def</span> <span class="nf">get_user_action_logs</span><span class="p">(</span><span class="n">es</span><span class="p">:</span><span class="n">Elasticsearch</span><span class="p">,</span> <span class="n">time_range</span><span class="p">):</span>
+    <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="nf">__timerange2gtelte</span><span class="p">(</span><span class="n">time_range</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">query</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="sh">"</span><span class="s">must</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="sh">"</span><span class="s">exists</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">field</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">필드명</span><span class="sh">"</span><span class="p">}},</span>
+                    <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">필드명</span><span class="sh">"</span><span class="p">}}</span>
+                <span class="p">],</span>
+                <span class="sh">"</span><span class="s">filter</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="sh">"</span><span class="s">range</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">@timestamp</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="sh">"</span><span class="s">format</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">strict_date_optional_time</span><span class="sh">"</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">gte</span><span class="sh">"</span><span class="p">:</span> <span class="n">gte</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">lte</span><span class="sh">"</span><span class="p">:</span> <span class="n">lte</span><span class="p">}}</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="c1">#
+</span>    
+    <span class="c1"># set fields to gather
+</span>    <span class="n">source_includes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sh">"</span><span class="s">필드명1</span><span class="sh">"</span><span class="p">,</span> 
+        <span class="sh">"</span><span class="s">필드명2</span><span class="sh">"</span> 
+    <span class="p">]</span>
+    
+    <span class="n">df</span> <span class="o">=</span> <span class="nf">__user_action_logs_to_df</span><span class="p">(</span><span class="nf">get_log</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_includes</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">df</span> 
+
+<span class="k">def</span> <span class="nf">create_user_info</span><span class="p">(</span><span class="n">logs</span><span class="p">):</span>
+    <span class="n">user_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># 1번 로그들을 저장할 딕셔너리 (key: mail, value: list of userID)
+</span>    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># 1번 로그들 먼저 처리
+</span>    <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">:</span>
+        <span class="n">dist_data</span> <span class="o">=</span> <span class="n">log</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">_source</span><span class="sh">'</span><span class="p">,</span> <span class="p">{}).</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">dist</span><span class="sh">'</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># 1번 로그: userID와 mail이 있는 경우
+</span>        <span class="k">if</span> <span class="sh">'</span><span class="s">userID</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">dist_data</span> <span class="ow">and</span> <span class="sh">'</span><span class="s">mail</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">dist_data</span><span class="p">:</span>
+            <span class="n">user_id</span> <span class="o">=</span> <span class="n">dist_data</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">userID</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">mail</span> <span class="o">=</span> <span class="n">dist_data</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">mail</span><span class="sh">'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mail</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">:</span>
+                <span class="n">user_data</span><span class="p">[</span><span class="n">mail</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">user_data</span><span class="p">[</span><span class="n">mail</span><span class="p">].</span><span class="nf">append</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="c1"># 2번 로그들을 처리
+</span>    <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">:</span>
+        <span class="n">dist_data</span> <span class="o">=</span> <span class="n">log</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">_source</span><span class="sh">'</span><span class="p">,</span> <span class="p">{}).</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">dist</span><span class="sh">'</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># 2번 로그: account 내 name과 username이 있는 경우
+</span>        <span class="k">if</span> <span class="sh">'</span><span class="s">account</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">dist_data</span><span class="p">:</span>
+            <span class="n">account_data</span> <span class="o">=</span> <span class="n">dist_data</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">account</span><span class="sh">'</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">account_data</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">username</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">name_info</span> <span class="o">=</span> <span class="n">account_data</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">,</span> <span class="sh">""</span><span class="p">)</span>
+
+            <span class="c1"># 이름과 부서를 분리
+</span>            <span class="k">if</span> <span class="sh">"</span><span class="s">@abc.com</span><span class="sh">"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">username</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">name</span><span class="p">,</span> <span class="n">dept</span> <span class="o">=</span> <span class="n">name_info</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="sh">"</span><span class="s"> </span><span class="sh">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">name_info</span>
+                    <span class="n">dept</span> <span class="o">=</span> <span class="sh">""</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name_info</span>
+                <span class="n">dept</span> <span class="o">=</span> <span class="sh">"</span><span class="s">abc</span><span class="sh">"</span>
+
+            <span class="c1"># 1번 로그의 mail과 2번 로그의 username이 일치하는지 확인
+</span>            <span class="k">if</span> <span class="n">username</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">user_id</span> <span class="ow">in</span> <span class="n">user_data</span><span class="p">[</span><span class="n">username</span><span class="p">]:</span>
+                    <span class="n">records</span><span class="p">.</span><span class="nf">append</span><span class="p">({</span>
+                        <span class="sh">'</span><span class="s">user_id</span><span class="sh">'</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                        <span class="sh">'</span><span class="s">mail</span><span class="sh">'</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+                        <span class="sh">'</span><span class="s">name</span><span class="sh">'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="sh">'</span><span class="s">dept</span><span class="sh">'</span><span class="p">:</span> <span class="n">dept</span>
+                    <span class="p">})</span>
+
+    <span class="c1"># DataFrame 생성
+</span>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
+
+    <span class="c1"># userID를 기준으로 유니크한 값만 유지
+</span>    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="nf">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="sh">'</span><span class="s">user_id</span><span class="sh">'</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span>
+
+
+
+<span class="k">def</span> <span class="nf">get_user_info_logs</span><span class="p">(</span><span class="n">es</span><span class="p">:</span><span class="n">Elasticsearch</span><span class="p">,</span> <span class="n">time_range</span><span class="p">):</span>
+    <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="nf">__timerange2gtelte</span><span class="p">(</span><span class="n">time_range</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">query</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="sh">"</span><span class="s">must</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                   <span class="p">{</span>
+                       <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="sh">"</span><span class="s">should</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">필드1</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">abcd</span><span class="sh">"</span><span class="p">}},</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">필드2</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">abcdef</span><span class="sh">"</span><span class="p">}},</span>
+                            <span class="p">],</span>
+                            <span class="sh">"</span><span class="s">minimum_should_match</span><span class="sh">"</span><span class="p">:</span> <span class="mi">1</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="sh">"</span><span class="s">should</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">어쩌고</span><span class="sh">"</span><span class="p">}},</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">어쩌고2</span><span class="sh">"</span><span class="p">}},</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span><span class="sh">"</span><span class="s">어쩌고3</span><span class="sh">"</span><span class="p">}}</span>
+                            <span class="p">],</span>
+                            <span class="sh">"</span><span class="s">minimum_should_match</span><span class="sh">"</span><span class="p">:</span> <span class="mi">1</span>
+                       <span class="p">}</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="sh">"</span><span class="s">filter</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="sh">"</span><span class="s">range</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">@timestamp</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="sh">"</span><span class="s">format</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">strict_date_optional_time</span><span class="sh">"</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">gte</span><span class="sh">"</span><span class="p">:</span> <span class="n">gte</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">lte</span><span class="sh">"</span><span class="p">:</span> <span class="n">lte</span><span class="p">}}</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="c1">#
+</span>
+    <span class="n">source_includes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sh">"</span><span class="s">필드1</span><span class="sh">"</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">필드2</span><span class="sh">"</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">필드3</span><span class="sh">"</span>
+    <span class="p">]</span>
+
+    <span class="n">logs</span> <span class="o">=</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_includes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">logs</span>
+
+
+<span class="k">def</span> <span class="nf">merge_user_data</span><span class="p">(</span><span class="n">user_action</span><span class="p">,</span> <span class="n">user_info</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">merge</span><span class="p">(</span><span class="n">user_action</span><span class="p">,</span> <span class="n">user_info</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="sh">"</span><span class="s">user_id</span><span class="sh">"</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="sh">"</span><span class="s">inner</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="k">def</span> <span class="nf">get_service_logs</span><span class="p">(</span><span class="n">es</span><span class="p">:</span> <span class="n">Elasticsearch</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">time_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+
+    <span class="n">user_action</span> <span class="o">=</span> <span class="nf">get_user_action_logs</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">time_range</span><span class="p">)</span>
+    <span class="n">user_info</span> <span class="o">=</span> <span class="nf">create_user_info</span><span class="p">(</span><span class="nf">get_user_info_logs</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">time_range</span><span class="p">))</span>
+
+    <span class="n">service_logs</span> <span class="o">=</span> <span class="nf">merge_user_data</span><span class="p">(</span><span class="n">user_action</span><span class="p">,</span> <span class="n">user_info</span><span class="p">)</span>
+
+<span class="c1">#     if save:
+#         filename = "{}_{}.xlsx".format(start_time.strftime("%Y%m%d"), end_time.strftime("%Y%m%d"))
+#         service_logs.to_excel("{}".format(filename))
+</span>
+    <span class="k">return</span> <span class="n">service_logs</span>
+
+
+<span class="c1">### 유저 액션 2
+</span><span class="k">def</span> <span class="nf">get_action_logs2</span><span class="p">(</span><span class="n">es</span><span class="p">:</span><span class="n">Elasticsearch</span><span class="p">,</span> <span class="n">time_range</span><span class="p">):</span> 
+    <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="nf">__timerange2gtelte</span><span class="p">(</span><span class="n">time_range</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">query</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="sh">"</span><span class="s">must</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="sh">"</span><span class="s">bool</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="sh">"</span><span class="s">should</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span><span class="sh">"</span><span class="s">어쩌고</span><span class="sh">"</span><span class="p">}},</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span><span class="sh">"</span><span class="s">어쩌고2</span><span class="sh">"</span><span class="p">}},</span>
+                                <span class="p">{</span><span class="sh">"</span><span class="s">match_phrase</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">message</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">어쩌고3</span><span class="sh">"</span><span class="p">}}</span>
+                            <span class="p">],</span>
+                            <span class="sh">"</span><span class="s">minimum_should_match</span><span class="sh">"</span><span class="p">:</span> <span class="mi">1</span>
+                       <span class="p">}</span>
+                    <span class="p">},</span>
+                <span class="p">],</span>
+                <span class="sh">"</span><span class="s">filter</span><span class="sh">"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="sh">"</span><span class="s">range</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">@timestamp</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="sh">"</span><span class="s">format</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">strict_date_optional_time</span><span class="sh">"</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">gte</span><span class="sh">"</span><span class="p">:</span> <span class="n">gte</span><span class="p">,</span>
+                    <span class="sh">"</span><span class="s">lte</span><span class="sh">"</span><span class="p">:</span> <span class="n">lte</span><span class="p">}}</span>
+                    <span class="p">}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="c1">#
+</span>
+    <span class="n">source_includes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sh">"</span><span class="s">ㅁㅁㅁ</span><span class="sh">"</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">ㅇㅇㅇ</span><span class="sh">"</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">ㅈㅈㅈ</span><span class="sh">"</span>
+    <span class="p">]</span>
+
+    <span class="n">logs_2</span> <span class="o">=</span> <span class="nf">get_log</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_includes</span><span class="p">)</span>
+    
+    <span class="n">df_2</span><span class="o">=</span><span class="n">pd</span><span class="p">.</span><span class="nc">DataFrame</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">logs_2</span><span class="p">)):</span>
+        <span class="n">json_data</span><span class="o">=</span><span class="n">pd</span><span class="p">.</span><span class="nf">json_normalize</span><span class="p">(</span><span class="n">logs_2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">df_2</span><span class="o">=</span><span class="n">pd</span><span class="p">.</span><span class="nf">concat</span><span class="p">([</span><span class="n">df_2</span><span class="p">,</span><span class="n">json_data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">df_2</span> <span class="o">=</span> <span class="n">df_2</span><span class="p">[[</span><span class="sh">'</span><span class="s">_id</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">_source.@timestamp</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">_source.message</span><span class="sh">'</span><span class="p">]]</span>
+
+    <span class="n">df_2</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">id</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">to_datetime</span><span class="p">(</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="sh">"</span><span class="s">%Y-%m-%dT%H:%M:%S.%fZ</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pd</span><span class="p">.</span><span class="nc">Timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="n">str_to_dict</span><span class="p">)</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">))</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message_text</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">message</span><span class="sh">'</span><span class="p">))</span>
+
+    
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="n">str_to_dict</span><span class="p">)</span>
+    
+    <span class="n">user_id_list</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">prompt_list</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">category_list</span><span class="o">=</span><span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">df_2</span><span class="p">)):</span>
+        <span class="n">user_id</span><span class="o">=</span> <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">][</span><span class="n">i</span><span class="p">].</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">userId</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">user_id_list</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+        <span class="n">prompt</span> <span class="o">=</span> <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">][</span><span class="n">i</span><span class="p">].</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">prompt</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">prompt_list</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+        <span class="n">category</span><span class="o">=</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">][</span><span class="n">i</span><span class="p">].</span><span class="nf">get</span><span class="p">(</span><span class="sh">'</span><span class="s">category</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">category_list</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
+
+
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">user_id</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">user_id_list</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">prompt</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">prompt_list</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">category</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">category_list</span>
+
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="sh">'</span><span class="s">A</span><span class="sh">'</span>
+    <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">sub_type</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="sh">''</span>
+    <span class="n">df_2</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">category</span><span class="sh">'</span><span class="p">].</span><span class="nf">notna</span><span class="p">(),</span> <span class="sh">'</span><span class="s">sub_type</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">category</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">df_2</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message_text</span><span class="sh">'</span><span class="p">]</span><span class="o">==</span><span class="sh">'</span><span class="s">텍스트 내용</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sub_type</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span>
+    <span class="n">df_2</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_2</span><span class="p">[</span><span class="sh">'</span><span class="s">message_text</span><span class="sh">'</span><span class="p">]</span><span class="o">==</span><span class="sh">'</span><span class="s">텍스트 내용2</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">sub_type</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="sh">'</span><span class="s">b</span><span class="sh">'</span>
+
+    <span class="k">return</span> <span class="n">df_2</span>
+
+
+<span class="kn">import</span> <span class="n">ast</span>
+<span class="k">def</span> <span class="nf">str_to_dict</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ast</span><span class="p">.</span><span class="nf">literal_eval</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="nf">except </span><span class="p">(</span><span class="nb">ValueError</span><span class="p">,</span> <span class="nb">SyntaxError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">"</span><span class="s">__main__</span><span class="sh">"</span><span class="p">:</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="nf">get_service_logs</span><span class="p">(</span><span class="nf">get_es</span><span class="p">(),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+    <span class="n">logs_2</span><span class="o">=</span> <span class="nf">get_service_logs2</span><span class="p">(</span><span class="nf">get_es</span><span class="p">(),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 특정 부서는 다 제외하기
+</span><span class="n">without_a</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">[</span><span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">dept</span><span class="sh">'</span><span class="p">]</span><span class="o">!=</span><span class="sh">"</span><span class="s">a</span><span class="sh">"</span><span class="p">].</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1">## 특정 메일만 제외하기
+</span><span class="n">without_a</span> <span class="o">=</span> <span class="n">without_a</span><span class="p">[</span><span class="o">~</span><span class="n">without_a</span><span class="p">[</span><span class="sh">'</span><span class="s">mail</span><span class="sh">'</span><span class="p">].</span><span class="nf">isin</span><span class="p">([</span><span class="sh">'</span><span class="s">a@abc.com</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">b@abc.com</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">c@abc.com</span><span class="sh">'</span><span class="p">])].</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 특정 기능만 사용했을 시, 그 기능만 피벗 테이블로 만들기
+</span><span class="n">unique_values</span> <span class="o">=</span> <span class="n">total_action</span><span class="p">[</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">].</span><span class="nf">unique</span><span class="p">().</span><span class="nf">tolist</span><span class="p">()</span>
+
+<span class="n">count_all</span><span class="o">=</span><span class="n">total_action</span><span class="p">.</span><span class="nf">groupby</span><span class="p">([</span><span class="sh">'</span><span class="s">date</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">]).</span><span class="nf">agg</span><span class="p">({</span><span class="sh">'</span><span class="s">timestamp</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">count</span><span class="sh">'</span><span class="p">}).</span><span class="nf">reset_index</span><span class="p">()</span>
+<span class="n">count_all</span><span class="p">.</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">date</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">사용량</span><span class="sh">'</span><span class="p">]</span>
+<span class="n">pv_count_all</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">pivot_table</span><span class="p">(</span><span class="n">count_all</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="sh">'</span><span class="s">date</span><span class="sh">'</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="sh">'</span><span class="s">사용량</span><span class="sh">'</span><span class="p">,</span><span class="n">aggfunc</span><span class="o">=</span><span class="sh">'</span><span class="s">sum</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">pv_count_all</span> <span class="o">=</span> <span class="n">pv_count_all</span><span class="p">[</span><span class="n">unique_values</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>.</p>
+
+<p>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">__assign_type</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="c1"># assign action category with preprocessed row data         
+</span>    <span class="k">if</span> <span class="nf">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">zzz</span><span class="sh">'</span><span class="p">]).</span><span class="nf">startswith</span><span class="p">(</span><span class="sh">"</span><span class="s">[[</span><span class="sh">"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sh">"</span><span class="s">z</span><span class="sh">"</span>
+    <span class="k">elif</span> <span class="nf">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">m</span><span class="sh">'</span><span class="p">])</span><span class="o">==</span><span class="sh">'</span><span class="s">mmm</span><span class="sh">'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sh">"</span><span class="s">AA</span><span class="sh">"</span>
+    <span class="k">elif</span> <span class="n">pd</span><span class="p">.</span><span class="nf">notna</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">asadasd</span><span class="sh">'</span><span class="p">])</span> <span class="ow">or</span> <span class="n">pd</span><span class="p">.</span><span class="nf">notna</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">asd</span><span class="sh">'</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="sh">"</span><span class="s">BB</span><span class="sh">"</span>
+    <span class="k">elif</span> <span class="n">pd</span><span class="p">.</span><span class="nf">notna</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">asddsadwww</span><span class="sh">'</span><span class="p">])</span> <span class="ow">and</span> <span class="n">pd</span><span class="p">.</span><span class="nf">notna</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="sh">'</span><span class="s">adsd</span><span class="sh">'</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="sh">"</span><span class="s">asda</span><span class="sh">"</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="sh">"</span><span class="s">기타</span><span class="sh">"</span>
+
+<span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">.</span><span class="nf">apply</span><span class="p">(</span><span class="n">__assign_type</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1">## 타입이 AA일 경우 a 컬럼을 만들고 각 행별로 값을 분류, 타입이 BB일 경우 컬럼 b를 만들고 분류
+</span><span class="n">Aa</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">]</span> <span class="o">==</span> <span class="sh">'</span><span class="s">AA</span><span class="sh">'</span>
+<span class="n">Bb</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">type</span><span class="sh">'</span><span class="p">]</span> <span class="o">==</span> <span class="sh">'</span><span class="s">BB</span><span class="sh">'</span>
+
+<span class="n">df_logs</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">Aa</span><span class="p">,</span> <span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">abcd</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sh">"</span><span class="s">o</span><span class="sh">"</span> <span class="k">if</span> <span class="nf">str</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="nf">startswith</span><span class="p">(</span><span class="sh">"</span><span class="s">특정 단어</span><span class="sh">"</span><span class="p">)</span> <span class="k">else</span> <span class="sh">"</span><span class="s">x</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">df_logs</span><span class="p">.</span><span class="n">loc</span><span class="p">[</span><span class="n">Bb</span><span class="p">,</span> <span class="sh">'</span><span class="s">b</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_logs</span><span class="p">[</span><span class="sh">'</span><span class="s">efg</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sh">"</span><span class="s">분류1</span><span class="sh">"</span> <span class="k">if</span> <span class="nf">str</span><span class="p">(</span><span class="n">x</span><span class="p">).</span><span class="nf">startswith</span><span class="p">(</span><span class="sh">"</span><span class="s">특정 단어</span><span class="sh">"</span><span class="p">)</span> <span class="k">else</span> <span class="sh">""</span><span class="p">)</span>
+</code></pre></div></div>
+
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/python/2024/03/29/naver_wpa.html" title="네이버 야구 중계 wpa 크롤링">네이버 야구 중계 wpa 크롤링</a><a class="next" href="/jekyll-theme-yat/sql/2025/01/07/haversine.html" title="하버사인 공식 계산하는 법">하버사인 공식 계산하는 법</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/python/2024/02/19/text_counts.html" title="하버사인 공식 계산하는 법">데이터프레임 컬럼 내 텍스트 출현 빈도</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/machine_learning/2025/04/17/ml_04.html" title="하버사인 공식 계산하는 법">혼자 공부하는 머신러닝 04</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2021/11/28/pandas-%EA%B8%B0%EC%B4%88-2.html" title="하버사인 공식 계산하는 법">pandas 기초 2</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/machine_learning/2025/04/27/ml_06.html" title="하버사인 공식 계산하는 법">혼자 공부하는 머신러닝 06</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2025 jeong3427</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

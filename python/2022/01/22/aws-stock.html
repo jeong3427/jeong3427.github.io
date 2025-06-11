@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<!-- <html lang="en"> --><html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KLDKHLH');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta> --><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AWS Lambda 슬랙 주가봇 만들기 | hjim 코드 저장소</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="AWS Lambda 슬랙 주가봇 만들기">
+<meta name="author" content="jeong3427">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
+<link rel="canonical" href="https://jeong3427.github.io//jekyll-theme-yat/python/2022/01/22/aws-stock.html">
+<meta property="og:url" content="https://jeong3427.github.io//jekyll-theme-yat/python/2022/01/22/aws-stock.html">
+<meta property="og:site_name" content="hjim 코드 저장소">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2022-01-22T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="AWS Lambda 슬랙 주가봇 만들기">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"jeong3427"},"dateModified":"2022-01-22T00:00:00+09:00","datePublished":"2022-01-22T00:00:00+09:00","description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"AWS Lambda 슬랙 주가봇 만들기","mainEntityOfPage":{"@type":"WebPage","@id":"https://jeong3427.github.io//jekyll-theme-yat/python/2022/01/22/aws-stock.html"},"url":"https://jeong3427.github.io//jekyll-theme-yat/python/2022/01/22/aws-stock.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://jeong3427.github.io//jekyll-theme-yat/feed.xml" title="hjim 코드 저장소">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="hjim 코드 저장소" src="" onerror="this.style.display='none'">
+  hjim 코드 저장소
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">AWS Lambda 슬랙 주가봇 만들기</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-01-22T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jan 22, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#python">#python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#pandas">#pandas</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#aws">#aws</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p><img src="../../../../img/2022-01-22-aws-stock/slack_stock_bot.PNG" alt="slack_stock_bot"></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># -*- coding:utf-8 -*-
+</span><span class="kn">import</span> <span class="n">json</span>
+<span class="kn">import</span> <span class="n">yfinance</span> <span class="k">as</span> <span class="n">yf</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">mpl_finance</span> <span class="kn">import</span> <span class="n">candlestick_ohlc</span>
+<span class="kn">import</span> <span class="n">matplotlib.dates</span> <span class="k">as</span> <span class="n">mpl_dates</span>
+<span class="kn">from</span> <span class="n">slack_sdk</span> <span class="kn">import</span> <span class="n">WebClient</span>
+<span class="kn">from</span> <span class="n">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+<span class="kn">import</span> <span class="n">os</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="nc">WebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="sh">"</span><span class="s">토큰 코드</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="sh">"</span><span class="s">isBase64Encoded</span><span class="sh">"</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="sh">"</span><span class="s">statusCode</span><span class="sh">"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="sh">"</span><span class="s">headers</span><span class="sh">"</span><span class="p">:</span> <span class="p">{</span><span class="sh">"</span><span class="s">X-Slack-No-Retry</span><span class="sh">"</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="sh">"</span><span class="s">body</span><span class="sh">"</span><span class="p">:</span> <span class="sh">""</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nf">int</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="sh">'</span><span class="s">headers</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">x-slack-retry-num</span><span class="sh">'</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">slack_body</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">body</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">slack_event</span> <span class="o">=</span> <span class="n">json</span><span class="p">.</span><span class="nf">loads</span><span class="p">(</span><span class="n">slack_body</span><span class="p">)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">slack_event</span><span class="p">[</span><span class="sh">'</span><span class="s">event</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">channel</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">slack_event</span><span class="p">[</span><span class="sh">'</span><span class="s">event</span><span class="sh">'</span><span class="p">][</span><span class="sh">'</span><span class="s">text</span><span class="sh">'</span><span class="p">]</span>
+
+
+    <span class="k">if</span> <span class="sh">"</span><span class="s">challenge</span><span class="sh">"</span> <span class="ow">in</span> <span class="n">slack_event</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="sh">'</span><span class="s">statusCode</span><span class="sh">'</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="sh">'</span><span class="s">body</span><span class="sh">'</span><span class="p">:</span> <span class="n">slack_event</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">challenge</span><span class="sh">"</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    
+    <span class="k">if</span> <span class="n">txt</span><span class="p">.</span><span class="nf">startswith</span><span class="p">(</span><span class="sh">'</span><span class="s">티커는</span><span class="sh">'</span><span class="p">):</span>
+        <span class="n">ticker</span><span class="o">=</span><span class="n">txt</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        
+        <span class="n">pd</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">display</span><span class="p">.</span><span class="n">float_format</span> <span class="o">=</span> <span class="sh">'</span><span class="s">{:.2f}</span><span class="sh">'</span><span class="p">.</span><span class="nb">format</span>
+        
+        <span class="c1">#원하는 주식의 내용들을 가져오기
+</span>        <span class="n">data</span><span class="o">=</span><span class="n">yf</span><span class="p">.</span><span class="nc">Ticker</span><span class="p">(</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="sh">'</span><span class="p">)</span>
+		
+        <span class="k">if</span> <span class="nf">len</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span> 
+            <span class="c1">#잘못 입력할 경우
+</span>            <span class="n">client</span><span class="p">.</span><span class="nf">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="sh">"</span><span class="s">티커를 확인해주세요</span><span class="sh">"</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#y finance info 내용들 중 필요한 정보
+</span>            <span class="n">stock_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">[</span><span class="sh">'</span><span class="s">longName</span><span class="sh">'</span><span class="p">]</span>
+            <span class="n">stock_currency</span><span class="o">=</span><span class="n">data</span><span class="p">.</span><span class="n">info</span><span class="p">[</span><span class="sh">'</span><span class="s">currency</span><span class="sh">'</span><span class="p">]</span>
+
+            <span class="c1">#3mo는 그래프로 만들고 1mo는 잘라서 텍스트 그래프로 사용
+</span>            <span class="n">data_3mo</span> <span class="o">=</span> <span class="n">yf</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span><span class="n">tickers</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="sh">'</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="sh">"</span><span class="s">3mo</span><span class="sh">"</span><span class="p">).</span><span class="nf">set_axis</span><span class="p">([</span><span class="sh">'</span><span class="s">시가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">고가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">저가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">종가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">조정 종가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">거래량</span><span class="sh">'</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">data_1mo</span> <span class="o">=</span> <span class="n">yf</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span><span class="n">tickers</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="sh">'</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="sh">"</span><span class="s">1mo</span><span class="sh">"</span><span class="p">).</span><span class="nf">set_axis</span><span class="p">([</span><span class="sh">'</span><span class="s">시가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">고가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">저가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">종가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">조정 종가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">거래량</span><span class="sh">'</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+            <span class="n">data_1mo</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">.</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+            <span class="c1">#strftime 처리 안 하면 시간까지 출력돼서 잘라내기
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">].</span><span class="n">dt</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%d</span><span class="sh">'</span><span class="p">)</span>
+
+            <span class="c1">#dataframe에서 전날 대비 계산하려고 한 칸씩 내리기
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">전날</span><span class="sh">'</span><span class="p">]</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">조정 종가</span><span class="sh">'</span><span class="p">].</span><span class="nf">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1">#퍼센트 타입으로 표기 .2는 소수점 둘째자리까지
+</span>            <span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">전날 대비</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">조정 종가</span><span class="sh">'</span><span class="p">]</span><span class="o">-</span><span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">전날</span><span class="sh">'</span><span class="p">])</span><span class="o">/</span><span class="n">data_1mo</span><span class="p">[</span><span class="sh">'</span><span class="s">전날</span><span class="sh">'</span><span class="p">]).</span><span class="nf">apply</span><span class="p">(</span><span class="sh">'</span><span class="s">{:.2%}</span><span class="sh">'</span><span class="p">.</span><span class="nb">format</span><span class="p">)</span>
+
+            <span class="c1">#끝의 5일치만 보여주기
+</span>            <span class="n">data_5d</span><span class="o">=</span><span class="n">data_1mo</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:].</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">data_5d</span> <span class="o">=</span> <span class="n">data_5d</span><span class="p">.</span><span class="n">loc</span><span class="p">[:,[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">시가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">고가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">종가</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">전날 대비</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">거래량</span><span class="sh">'</span><span class="p">]]</span>
+
+            <span class="c1">#슬랙에 보내기
+</span>            <span class="n">text_graph</span><span class="o">=</span> <span class="nf">tabulate</span><span class="p">(</span><span class="n">data_5d</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span><span class="sh">'</span><span class="s">keys</span><span class="sh">'</span><span class="p">,</span> <span class="n">tablefmt</span><span class="o">=</span><span class="sh">'</span><span class="s">presto</span><span class="sh">'</span><span class="p">,</span> <span class="n">showindex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">client</span><span class="p">.</span><span class="nf">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="sh">"</span><span class="s">주식 이름은 : </span><span class="sh">"</span><span class="o">+</span> <span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">stock_name</span><span class="si">}</span><span class="sh">'</span><span class="o">+</span><span class="sh">"</span><span class="s">  거래 화폐는 : </span><span class="sh">"</span><span class="o">+</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">stock_currency</span><span class="si">}</span><span class="sh">'</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">client</span><span class="p">.</span><span class="nf">chat_postMessage</span><span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="n">ch</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span> <span class="n">text_graph</span><span class="p">,</span> <span class="n">as_user</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="c1">#3개월치 캔들스틱
+</span>            <span class="c1">#캔들스틱으로 만들기 위한 준비
+</span>            <span class="n">plt</span><span class="p">.</span><span class="n">style</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="sh">'</span><span class="s">ggplot</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">chart_data</span> <span class="o">=</span> <span class="n">data_3mo</span><span class="p">.</span><span class="nf">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">ohlc</span> <span class="o">=</span> <span class="n">chart_data</span><span class="p">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">시가</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">고가</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">저가</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">종가</span><span class="sh">'</span><span class="p">]]</span>
+            <span class="n">ohlc</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="nf">to_datetime</span><span class="p">(</span><span class="n">ohlc</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">])</span>
+            <span class="n">ohlc</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ohlc</span><span class="p">[</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">].</span><span class="nf">apply</span><span class="p">(</span><span class="n">mpl_dates</span><span class="p">.</span><span class="n">date2num</span><span class="p">)</span>
+            <span class="n">ohlc</span> <span class="o">=</span> <span class="n">ohlc</span><span class="p">.</span><span class="nf">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+            <span class="c1"># 표 만들기 - 상승은 빨간색, 하강은 파랑색
+</span>            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">()</span>
+            <span class="nf">candlestick_ohlc</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ohlc</span><span class="p">.</span><span class="n">values</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">colorup</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">,</span> <span class="n">colordown</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># 레이블과 제목
+</span>            <span class="n">ax</span><span class="p">.</span><span class="nf">set_xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Date</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">.</span><span class="nf">set_ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Price</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="sh">'</span><span class="si">{</span><span class="n">stock_name</span><span class="si">}</span><span class="sh">'</span><span class="o">+</span><span class="sh">"</span><span class="s"> Recent 3 Months Close</span><span class="sh">"</span><span class="p">)</span>
+
+            <span class="c1"># date 표기 처리 및 표 최대로 키우기
+</span>            <span class="n">date_format</span> <span class="o">=</span> <span class="n">mpl_dates</span><span class="p">.</span><span class="nc">DateFormatter</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%d</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">ax</span><span class="p">.</span><span class="n">xaxis</span><span class="p">.</span><span class="nf">set_major_formatter</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">.</span><span class="nf">autofmt_xdate</span><span class="p">()</span>
+            <span class="n">fig</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+
+            <span class="c1"># labmda tmp에 저장하고 슬랙에 보내기
+</span>            <span class="n">os</span><span class="p">.</span><span class="nf">chdir</span><span class="p">(</span><span class="sh">'</span><span class="s">/tmp</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">plt</span><span class="p">.</span><span class="nf">savefig</span><span class="p">(</span><span class="sh">"</span><span class="s">stock_image.png</span><span class="sh">"</span><span class="p">)</span>
+
+            <span class="n">client</span><span class="p">.</span><span class="nf">files_upload</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="sh">"</span><span class="s">stock_image.png</span><span class="sh">"</span><span class="p">,</span><span class="n">channels</span><span class="o">=</span><span class="n">ch</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/tableau/2022/01/16/tb-year.html" title="태블로 이전 해 대비 월별 매출">태블로 이전 해 대비 월별 매출...</a><a class="next" href="/jekyll-theme-yat/python/2022/01/22/json_array.html" title="json array 처리">json array 처리</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/python/2022/06/21/google_review.html" title="json array 처리">구글 플레이 리뷰 크롤링</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/machine_learning/2025/04/16/ml_03.html" title="json array 처리">혼자 공부하는 머신러닝 03</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2023/12/10/itertools_product.html" title="json array 처리">itertools product</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/python/2022/04/20/random_lunch.html" title="json array 처리">슬랙 이모지에 반응한 사람들로 그루핑하기</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2025 jeong3427</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
